@@ -1,0 +1,81 @@
+.main-header {
+    margin-bottom: 1.5rem;
+}
+
+.segmented-control {
+    display: inline-flex;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.segment-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+}
+
+.segment-btn:hover {
+    color: var(--text-main);
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.segment-btn.active {
+    color: var(--primary);
+    background-color: rgba(37, 99, 235, 0.08);
+    /* Primary color low opacity */
+    font-weight: 600;
+}
+
+/* Optional: Bottom Indicator for alternative style */
+.active-indicator {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background-color: var(--primary);
+    border-radius: 3px 3px 0 0;
+    display: none;
+    /* Hidden for now, using background tint */
+}
+
+.segment-icon {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.segment-btn.active .segment-icon {
+    opacity: 1;
+    color: var(--primary);
+}
+
+@media (max-width: 640px) {
+    .segmented-control {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .segment-btn {
+        justify-content: center;
+        width: 100%;
+    }
+}

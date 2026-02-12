@@ -1,0 +1,114 @@
+.reports-container {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.reports-header-box {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(90deg, #f59e0b, #10b981);
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+    margin-bottom: 2rem;
+}
+
+.reports-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1f2937;
+    letter-spacing: 0.05em;
+}
+
+.reports-menu {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+    overflow-x: auto;
+}
+
+/* Standard: Blue for all report buttons */
+.report-menu-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #3b82f6 !important;
+    background: white !important;
+    color: #3b82f6 !important;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.report-menu-btn:hover {
+    background: #eff6ff !important;
+}
+
+.report-menu-btn.active {
+    background: #3b82f6 !important;
+    color: white !important;
+}
+
+.report-content {
+    background: white;
+}
+
+.report-table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.report-table th {
+    background: #f9fafb;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #4b5563;
+    border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.report-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #1f2937;
+}
+
+.report-table tr:hover {
+    background: #f9fafb;
+}
+
+.report-text {
+    color: #4b5563;
+}
+
+.client-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
