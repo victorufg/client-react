@@ -178,6 +178,8 @@ function App() {
               clients={clients}
               onEdit={handleEditClient}
               onDelete={handleDeleteClient}
+              onStatusChange={handleStatusChange}
+              onUpdate={fetchClients}
             />
             <Pagination />
           </>

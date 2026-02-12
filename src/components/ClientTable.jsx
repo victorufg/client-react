@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { MoreHorizontal, Edit, Trash2, ArrowUpDown, MessageSquare, MessageCircle, Power } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, ArrowUpDown, MessageSquare, MessageCircle, Power, X, Check } from 'lucide-react';
 import '../styles/ClientTable.css';
 import Filters from './Filters';
 import Pagination from './Pagination';
@@ -23,7 +23,7 @@ const getAvatarColor = (name) => {
     return colors[Math.abs(hash) % colors.length];
 };
 
-const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
+const ClientTable = ({ clients, onEdit, onDelete, onStatusChange, onUpdate }) => {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [currentPage, setCurrentPage] = React.useState(1);
     const [itemsPerPage, setItemsPerPage] = React.useState(100);
@@ -102,6 +102,64 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
     const [openMenuId, setOpenMenuId] = React.useState(null);
     const [menuPosition, setMenuPosition] = React.useState({ top: 0, left: 0 });
     const menuRef = React.useRef(null);
+
+    // Modal state
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [clientForMessages, setClientForMessages] = React.useState(null);
+    const [tempSelections, setTempSelections] = React.useState([]);
+    const [isSavingMessages, setIsSavingMessages] = React.useState(false);
+
+    const messageOptions = [
+        'Aniversário',
+        'Coleta de Data de Aniversário',
+        'Pós Venda',
+        'Atualizar KM',
+        'Lembrete de Cobrança',
+        'Retirada de Veículo'
+    ];
+
+    const openMessagesModal = (client) => {
+        setClientForMessages(client);
+        setTempSelections(client.gestaoMensagens && client.gestaoMensagens !== '-'
+            ? client.gestaoMensagens.split(', ')
+            : []);
+        setIsModalOpen(true);
+        setOpenMenuId(null);
+    };
+
+    const toggleOption = (option) => {
+        setTempSelections(prev =>
+            prev.includes(option)
+                ? prev.filter(o => o !== option)
+                : [...prev, option]
+        );
+    };
+
+    const handleSaveMessages = async () => {
+        try {
+            setIsSavingMessages(true);
+            const response = await fetch('/api/update-messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: clientForMessages.id,
+                    gestaoMensagens: tempSelections
+                })
+            });
+
+            if (response.ok) {
+                if (onUpdate) onUpdate();
+                setIsModalOpen(false);
+            } else {
+                alert('Erro ao atualizar mensagens');
+            }
+        } catch (error) {
+            console.error('Erro ao salvar mensagens:', error);
+            alert('Erro ao salvar mensagens');
+        } finally {
+            setIsSavingMessages(false);
+        }
+    };
 
     React.useEffect(() => {
         const handleClickOutside = (event) => {
@@ -309,9 +367,8 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                         <button className="menu-item" onClick={() => {
                             const client = clients.find(c => c.id === openMenuId);
                             if (client) {
-                                alert(`Gestão de Mensagens - ${client.cliente}:\n\nOpções selecionadas:\n${client.gestaoMensagens || 'Nenhuma opção selecionada'}`);
+                                openMessagesModal(client);
                             }
-                            setOpenMenuId(null);
                         }}>
                             <MessageSquare size={14} /> Gestão de Mensagens
                         </button>
@@ -365,6 +422,52 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                         }}>
                             <Trash2 size={14} /> Excluir
                         </button>
+                    </div>
+                </div>,
+                document.body
+            )}
+
+            {/* Messaging Management Modal */}
+            {isModalOpen && ReactDOM.createPortal(
+                <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+                    <div className="message-modal" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>Gestão de Mensagens</h3>
+                            <button className="btn-close" onClick={() => setIsModalOpen(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <p>Selecione as opções para <strong>{clientForMessages?.cliente}</strong>:</p>
+                            <div className="modal-checkbox-grid">
+                                {messageOptions.map(option => (
+                                    <label
+                                        key={option}
+                                        className={`modal-checkbox-item ${tempSelections.includes(option) ? 'checked' : ''}`}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={tempSelections.includes(option)}
+                                            onChange={() => toggleOption(option)}
+                                        />
+                                        <span>{option}</span>
+                                        {tempSelections.includes(option) && <Check size={14} style={{ marginLeft: 'auto' }} />}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn-cancel" onClick={() => setIsModalOpen(false)}>
+                                Cancelar
+                            </button>
+                            <button
+                                className="btn-save-modal"
+                                onClick={handleSaveMessages}
+                                disabled={isSavingMessages}
+                            >
+                                {isSavingMessages ? 'Salvando...' : 'Salvar Alterações'}
+                            </button>
+                        </div>
                     </div>
                 </div>,
                 document.body
