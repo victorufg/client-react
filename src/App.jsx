@@ -21,26 +21,41 @@ function App() {
       const data = await response.json();
 
       // Mapeia os dados do banco para o formato esperado pelos componentes
-      const mappedClients = data.map(c => ({
-        ...c,
-        id: c.id,
-        tipo: c.tipo_pessoa || '-',
-        cliente: c.nome || '-',
-        apelido: c.apelido || '-',
-        endereco: c.logradouro ? `${c.logradouro}${c.numero ? ', ' + c.numero : ''}${c.bairro ? ' - ' + c.bairro : ''}` : '-',
-        cidade: c.cidade || '-',
-        estado: c.estado || '-',
-        email: c.email || '-',
-        contatos: c.telefone || '-',
-        dataCadastro: c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-',
-        aniversario: c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '-',
-        cpfCnpj: c.cpf_cnpj || '-',
-        sexo: c.sexo || '-',
-        restricao: c.restricao === true ? 'Sim' : (c.restricao === false ? 'Não' : '-'),
-        status: c.status_ativo ? 'Ativo' : 'Inativo',
-        // Preserve original raw data for editing
-        rawData: c
-      }));
+      const mappedClients = data.map(c => {
+        // Helper date formatter to avoid timezone issues
+        const formatDate = (dateString) => {
+          if (!dateString) return '-';
+          // Assuming date comes as YYYY-MM-DDT... or YYYY-MM-DD
+          const datePart = dateString.split('T')[0];
+          const parts = datePart.split('-');
+          if (parts.length === 3) {
+            const [year, month, day] = parts;
+            return `${day}/${month}`;
+          }
+          return '-';
+        };
+
+        return {
+          ...c,
+          id: c.id,
+          tipo: c.tipo_pessoa || '-',
+          cliente: c.nome || '-',
+          apelido: c.apelido || '-',
+          endereco: c.logradouro ? `${c.logradouro}${c.numero ? ', ' + c.numero : ''}${c.bairro ? ' - ' + c.bairro : ''}` : '-',
+          cidade: c.cidade || '-',
+          estado: c.estado || '-',
+          email: c.email || '-',
+          contatos: c.telefone || '-',
+          dataCadastro: c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-',
+          aniversario: formatDate(c.data_nascimento),
+          cpfCnpj: c.cpf_cnpj || '-',
+          sexo: c.sexo || '-',
+          restricao: c.restricao === true ? 'Sim' : (c.restricao === false ? 'Não' : '-'),
+          status: c.status_ativo ? 'Ativo' : 'Inativo',
+          // Preserve original raw data for editing
+          rawData: c
+        };
+      });
 
       setClients(mappedClients);
     } catch (error) {
