@@ -23,7 +23,7 @@ const getAvatarColor = (name) => {
     return colors[Math.abs(hash) % colors.length];
 };
 
-const ClientTable = ({ clients, onEdit, onDelete }) => {
+const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [currentPage, setCurrentPage] = React.useState(1);
     const [itemsPerPage, setItemsPerPage] = React.useState(100);
@@ -299,6 +299,55 @@ const ClientTable = ({ clients, onEdit, onDelete }) => {
                         }}>
                             <Edit size={14} /> Editar
                         </button>
+
+                        <button className="menu-item" onClick={() => {
+                            // Placeholder for Message Management
+                            alert('Gestão de Mensagens: Funcionalidade em desenvolvimento.');
+                            setOpenMenuId(null);
+                        }}>
+                            Gestão de Mensagens
+                        </button>
+
+                        <button className="menu-item" onClick={() => {
+                            const client = clients.find(c => c.id === openMenuId);
+                            if (client && client.contatos) {
+                                // Extract numbers only
+                                const phone = client.contatos.replace(/\D/g, '');
+                                if (phone) {
+                                    window.open(`https://wa.me/55${phone}`, '_blank');
+                                } else {
+                                    alert('Cliente sem número de telefone válido.');
+                                }
+                            } else {
+                                alert('Cliente sem contatos cadastrados.');
+                            }
+                            setOpenMenuId(null);
+                        }}>
+                            Enviar Whatsapp
+                        </button>
+
+                        <button className="menu-item" onClick={() => {
+                            if (onStatusChange) {
+                                const client = clients.find(c => c.id === openMenuId);
+                                if (client) {
+                                    // Toggle status or set to specific 'false'? User said "Inativar". 
+                                    // Let's check current status string 'Ativo'/'Inativo' mapped in App.jsx
+                                    // Actually mapped data has 'status' as string 'Ativo'/'Inativo'
+                                    // But we also passed 'rawData'.
+                                    // Let's use rawData.status_ativo (boolean) if available, or infer from string.
+                                    // App.jsx maps: status: c.status_ativo ? 'Ativo' : 'Inativo'
+                                    // So we can assume if row.status === 'Ativo', we want to set false.
+                                    // However, simpler to just set false if button says "Inativar".
+                                    // Or cleaner: Toggle.
+                                    const isAtivo = client.status === 'Ativo';
+                                    onStatusChange(client, !isAtivo);
+                                }
+                            }
+                            setOpenMenuId(null);
+                        }}>
+                            {clients.find(c => c.id === openMenuId)?.status === 'Ativo' ? 'Inativar Cliente' : 'Ativar Cliente'}
+                        </button>
+
                         <button className="menu-item delete" onClick={() => {
                             if (onDelete) {
                                 const clientToDelete = clients.find(c => c.id === openMenuId);
