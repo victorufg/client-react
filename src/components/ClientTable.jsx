@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { MoreHorizontal, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import '../styles/ClientTable.css';
 import Filters from './Filters';
+import Pagination from './Pagination';
 
 const getInitials = (name) => {
     return name
@@ -24,6 +25,9 @@ const getAvatarColor = (name) => {
 
 const ClientTable = ({ clients }) => {
     const [searchTerm, setSearchTerm] = React.useState('');
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [itemsPerPage, setItemsPerPage] = React.useState(100);
+
     const [visibleColumns, setVisibleColumns] = React.useState([
         'id', 'tipo', 'cliente', 'endereco', 'email', 'contatos', 'dataCadastro', 'aniversario', 'cpfCnpj', 'sexo'
     ]);
@@ -59,6 +63,11 @@ const ClientTable = ({ clients }) => {
         { key: 'status', label: 'Status' },
     ];
 
+    // Reset pagination when filters change
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, advancedFilters]);
+
     const filteredRows = (clients || []).filter(row => {
         // Global Search
         const matchesSearch = Object.values(row).some(value => {
@@ -76,6 +85,11 @@ const ClientTable = ({ clients }) => {
 
         return matchesSearch && matchesAdvanced;
     });
+
+    // Pagination Logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentRows = filteredRows.slice(indexOfFirstItem, indexOfLastItem);
 
     const toggleColumn = (key) => {
         setVisibleColumns(prev =>
@@ -176,13 +190,13 @@ const ClientTable = ({ clients }) => {
                             {isVisible('sexo') && <th>Sexo</th>}
                             {isVisible('profissao') && <th>Profissão</th>}
                             {isVisible('faixaEtaria') && <th>Faixa Etária</th>}
-                            {isVisible('relacaoFamiliar') && <th>Relação</th>}
+                            {isVisible('relacaoFamiliar') && <th>Relação Familiar</th>}
                             {isVisible('restricao') && <th>Restrição</th>}
                             {isVisible('status') && <th>Status</th>}
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredRows.map((row) => (
+                        {currentRows.map((row) => (
                             <tr key={row.id} className="table-row">
                                 <td className="td-action">
                                     <div className="action-container">
@@ -237,6 +251,17 @@ const ClientTable = ({ clients }) => {
                     </tbody>
                 </table>
             </div>
+
+            <Pagination
+                itemsPerPage={itemsPerPage}
+                totalItems={filteredRows.length}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={(val) => {
+                    setItemsPerPage(val);
+                    setCurrentPage(1);
+                }}
+            />
 
             {openMenuId && typeof document !== 'undefined' && ReactDOM.createPortal(
                 <div
