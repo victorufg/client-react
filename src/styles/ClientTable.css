@@ -186,27 +186,49 @@
 .action-menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     margin-top: 0.5rem;
     background: white;
     border-radius: 12px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border);
     z-index: 100;
-    min-width: 120px;
+    min-width: 140px;
     overflow: hidden;
     animation: slideIn 0.2s ease-out;
+    transform-origin: top right;
+}
+
+.action-menu.open-up {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    transform-origin: bottom right;
+    animation: slideUp 0.2s ease-out;
 }
 
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-10px) scale(0.95);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 

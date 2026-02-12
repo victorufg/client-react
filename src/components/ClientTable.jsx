@@ -140,69 +140,73 @@ const ClientTable = ({ clients }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredRows.map((row) => (
-                            <tr key={row.id} className="table-row">
-                                <td className="td-action">
-                                    <div className="action-container">
-                                        <button
-                                            className={`action-btn ${openMenuId === row.id ? 'active' : ''}`}
-                                            onClick={(e) => toggleMenu(e, row.id)}
-                                        >
-                                            <MoreHorizontal size={18} />
-                                        </button>
+                        {filteredRows.map((row, index) => {
+                            const isLastRows = index >= filteredRows.length - 2 && filteredRows.length > 3;
 
-                                        {openMenuId === row.id && (
-                                            <div className="action-menu">
-                                                <button className="menu-item" onClick={() => console.log('Editar', row.id)}>
-                                                    <Edit size={14} /> Editar
-                                                </button>
-                                                <button className="menu-item delete" onClick={() => console.log('Excluir', row.id)}>
-                                                    <Trash2 size={14} /> Excluir
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </td>
-                                {isVisible('id') && <td className="td-id">#{row.id}</td>}
-                                {isVisible('tipo') && <td><span className="badge-tipo">{row.tipo}</span></td>}
-                                {isVisible('cliente') && <td>
-                                    <div className="client-cell">
-                                        <div
-                                            className="avatar"
-                                            style={{ backgroundColor: getAvatarColor(row.cliente) }}
-                                        >
-                                            {getInitials(row.cliente)}
+                            return (
+                                <tr key={row.id} className="table-row">
+                                    <td className="td-action">
+                                        <div className="action-container">
+                                            <button
+                                                className={`action-btn ${openMenuId === row.id ? 'active' : ''}`}
+                                                onClick={(e) => toggleMenu(e, row.id)}
+                                            >
+                                                <MoreHorizontal size={18} />
+                                            </button>
+
+                                            {openMenuId === row.id && (
+                                                <div className={`action-menu ${isLastRows ? 'open-up' : ''}`}>
+                                                    <button className="menu-item" onClick={() => console.log('Editar', row.id)}>
+                                                        <Edit size={14} /> Editar
+                                                    </button>
+                                                    <button className="menu-item delete" onClick={() => console.log('Excluir', row.id)}>
+                                                        <Trash2 size={14} /> Excluir
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
-                                        <span className="client-name">{row.cliente}</span>
-                                    </div>
-                                </td>}
-                                {isVisible('apelido') && <td className="text-muted">{row.apelido}</td>}
-                                {isVisible('endereco') && <td className="text-muted">{row.endereco}</td>}
-                                {isVisible('cidade') && <td className="text-muted">{row.cidade}</td>}
-                                {isVisible('estado') && <td className="text-muted">{row.estado}</td>}
-                                {isVisible('email') && <td className="text-muted">{row.email}</td>}
-                                {isVisible('contatos') && <td className="text-muted">{row.contatos}</td>}
-                                {isVisible('dataCadastro') && <td>{row.dataCadastro}</td>}
-                                {isVisible('aniversario') && <td>{row.aniversario}</td>}
-                                {isVisible('cpfCnpj') && <td className="font-mono">{row.cpfCnpj}</td>}
-                                {isVisible('sexo') && <td><span className={`sexo-badge ${(row.sexo || '').toLowerCase()}`}>{row.sexo || '-'}</span></td>}
-                                {isVisible('profissao') && <td className="text-muted">{row.profissao}</td>}
-                                {isVisible('faixaEtaria') && <td className="text-muted">{row.faixaEtaria}</td>}
-                                {isVisible('relacaoFamiliar') && <td className="text-muted">{row.relacaoFamiliar}</td>}
-                                {isVisible('restricao') && <td>{row.restricao}</td>}
-                                {isVisible('status') && <td>
-                                    <span style={{
-                                        padding: '4px 8px',
-                                        borderRadius: '12px',
-                                        fontSize: '0.8rem',
-                                        backgroundColor: row.status === 'Ativo' ? '#dcfce7' : '#f3f4f6',
-                                        color: row.status === 'Ativo' ? '#166534' : '#374151'
-                                    }}>
-                                        {row.status}
-                                    </span>
-                                </td>}
-                            </tr>
-                        ))}
+                                    </td>
+                                    {isVisible('id') && <td className="td-id">#{row.id}</td>}
+                                    {isVisible('tipo') && <td><span className="badge-tipo">{row.tipo}</span></td>}
+                                    {isVisible('cliente') && <td>
+                                        <div className="client-cell">
+                                            <div
+                                                className="avatar"
+                                                style={{ backgroundColor: getAvatarColor(row.cliente) }}
+                                            >
+                                                {getInitials(row.cliente)}
+                                            </div>
+                                            <span className="client-name">{row.cliente}</span>
+                                        </div>
+                                    </td>}
+                                    {isVisible('apelido') && <td className="text-muted">{row.apelido}</td>}
+                                    {isVisible('endereco') && <td className="text-muted">{row.endereco}</td>}
+                                    {isVisible('cidade') && <td className="text-muted">{row.cidade}</td>}
+                                    {isVisible('estado') && <td className="text-muted">{row.estado}</td>}
+                                    {isVisible('email') && <td className="text-muted">{row.email}</td>}
+                                    {isVisible('contatos') && <td className="text-muted">{row.contatos}</td>}
+                                    {isVisible('dataCadastro') && <td>{row.dataCadastro}</td>}
+                                    {isVisible('aniversario') && <td>{row.aniversario}</td>}
+                                    {isVisible('cpfCnpj') && <td className="font-mono">{row.cpfCnpj}</td>}
+                                    {isVisible('sexo') && <td><span className={`sexo-badge ${(row.sexo || '').toLowerCase()}`}>{row.sexo || '-'}</span></td>}
+                                    {isVisible('profissao') && <td className="text-muted">{row.profissao}</td>}
+                                    {isVisible('faixaEtaria') && <td className="text-muted">{row.faixaEtaria}</td>}
+                                    {isVisible('relacaoFamiliar') && <td className="text-muted">{row.relacaoFamiliar}</td>}
+                                    {isVisible('restricao') && <td>{row.restricao}</td>}
+                                    {isVisible('status') && <td>
+                                        <span style={{
+                                            padding: '4px 8px',
+                                            borderRadius: '12px',
+                                            fontSize: '0.8rem',
+                                            backgroundColor: row.status === 'Ativo' ? '#dcfce7' : '#f3f4f6',
+                                            color: row.status === 'Ativo' ? '#166534' : '#374151'
+                                        }}>
+                                            {row.status}
+                                        </span>
+                                    </td>}
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
