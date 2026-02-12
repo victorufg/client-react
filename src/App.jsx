@@ -82,6 +82,8 @@ function App() {
       rg_inscricao: savedData.rgInscricao,
       data_nascimento: savedData.dataNascimento,
       relacao_familiar: savedData.relacaoFamiliar,
+      email_comercial: savedData.emailComercial,
+      telefone_comercial: savedData.telefoneComercial,
       emitir_nf: savedData.emitirNF === 'Sim',
       iss_retido: savedData.issRetido === 'Sim',
       consumidor_final: savedData.consumidorFinal === 'Sim',
@@ -101,7 +103,8 @@ function App() {
       cliente_desde: savedData.clienteDesde,
       data_pagamento: savedData.dataPagamento,
       codigo_cidade: savedData.codigoCidade,
-      status_ativo: savedData.statusAtivo === 'Sim'
+      status_ativo: savedData.statusAtivo === 'Sim',
+      restricao: savedData.restricao === 'Sim'
     };
     setEditingClient(normalizedData);
   };
