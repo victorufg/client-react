@@ -43,6 +43,11 @@ const ClientForm = ({ onSave }) => {
         }
     };
 
+    const handleGeneralChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
     const [loading, setLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState({ text: '', type: '' });
 
