@@ -2,6 +2,8 @@ import { sql } from '@vercel/postgres';
 
 export default async function handler(request, response) {
   try {
+    // Aumentando a precisão de lucratividade e comissão para evitar overflow
+    // e garantindo que todas as colunas de valor suportem números grandes
     const result = await sql`
       CREATE TABLE IF NOT EXISTS clientes (
         id SERIAL PRIMARY KEY,
@@ -31,13 +33,13 @@ export default async function handler(request, response) {
         produtor_rural BOOLEAN,
         tipo_contribuinte VARCHAR(50),
         tipo_cliente VARCHAR(50),
-        credito_liberado DECIMAL(10,2),
-        valor_gasto DECIMAL(10,2),
-        saldo DECIMAL(10,2),
-        valor_consumido DECIMAL(10,2),
-        valor_custos DECIMAL(10,2),
-        lucratividade DECIMAL(5,2),
-        comissao DECIMAL(5,2),
+        credito_liberado DECIMAL(15,2),
+        valor_gasto DECIMAL(15,2),
+        saldo DECIMAL(15,2),
+        valor_consumido DECIMAL(15,2),
+        valor_custos DECIMAL(15,2),
+        lucratividade DECIMAL(15,2),
+        comissao DECIMAL(15,2),
         data_pagamento DATE,
         pix VARCHAR(255),
         restricao BOOLEAN,
@@ -53,11 +55,15 @@ export default async function handler(request, response) {
         observacao TEXT
       );
     `;
-    // Comandos de alteração para garantir que novas colunas existam se a tabela já foi criada
-    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS email VARCHAR(255);`;
-    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS email_comercial VARCHAR(255);`;
-    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS telefone VARCHAR(20);`;
-    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS telefone_comercial VARCHAR(20);`;
+
+    // Atualizar tipos de coluna existentes para evitar o erro de numeric overflow
+    await sql`ALTER TABLE clientes ALTER COLUMN lucratividade TYPE DECIMAL(15,2);`;
+    await sql`ALTER TABLE clientes ALTER COLUMN comissao TYPE DECIMAL(15,2);`;
+    await sql`ALTER TABLE clientes ALTER COLUMN credito_liberado TYPE DECIMAL(15,2);`;
+    await sql`ALTER TABLE clientes ALTER COLUMN valor_gasto TYPE DECIMAL(15,2);`;
+    await sql`ALTER TABLE clientes ALTER COLUMN saldo TYPE DECIMAL(15,2);`;
+    await sql`ALTER TABLE clientes ALTER COLUMN valor_consumido TYPE DECIMAL(15,2);`;
+    await sql`ALTER TABLE clientes ALTER COLUMN valor_custos TYPE DECIMAL(15,2);`;
 
     return response.status(200).json({ message: 'Tabela criada ou atualizada com sucesso!', result });
   } catch (error) {

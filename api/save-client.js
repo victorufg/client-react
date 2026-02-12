@@ -14,7 +14,9 @@ export default async function handler(request, response) {
     const parseCurrency = (val) => {
       if (!val) return 0;
       if (typeof val === 'number') return val;
-      return parseFloat(val.toString().replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+      // Remove "R$", dots (thousands separator), and replace comma with dot
+      const cleanValue = val.toString().replace(/[R$\s.]/g, '').replace(',', '.');
+      return parseFloat(cleanValue) || 0;
     };
 
     let result;
@@ -44,6 +46,8 @@ export default async function handler(request, response) {
            bairro = ${data.bairro || ''},
            estado = ${data.estado || ''},
            cidade = ${data.cidade || ''},
+           codigo_cidade = ${data.codigoCidade || ''},
+           referencia = ${data.referencia || ''},
            status_ativo = ${data.statusAtivo === 'Sim'},
            emitir_nf = ${data.emitirNF === 'Sim'},
            iss_retido = ${data.issRetido === 'Sim'},
@@ -60,7 +64,12 @@ export default async function handler(request, response) {
            comissao = ${parseCurrency(data.comissao)},
            pix = ${data.pix || ''},
            restricao = ${data.restricao === 'Sim'},
-           observacao = ${data.observacao || ''}
+           observacao = ${data.observacao || ''},
+           cnh_vencimento = ${data.cnhVencimento || null},
+           como_conheceu = ${data.comoConheceu || ''},
+           nome_amigo = ${data.nomeAmigo || ''},
+           cliente_desde = ${data.clienteDesde || null},
+           data_pagamento = ${data.dataPagamento || null}
          WHERE id = ${id}
          RETURNING id;
        `;
@@ -72,10 +81,12 @@ export default async function handler(request, response) {
           data_nascimento, faixa_etaria, sexo, relacao_familiar, profissao,
           email, email_comercial, telefone, telefone_comercial,
           cep, logradouro, numero, complemento, bairro, estado, cidade,
+          codigo_cidade, referencia,
           status_ativo, emitir_nf, iss_retido, consumidor_final, produtor_rural,
           tipo_contribuinte, tipo_cliente, credito_liberado, valor_gasto,
           saldo, valor_consumido, valor_custos, lucratividade, comissao,
-          pix, restricao, observacao
+          pix, restricao, observacao,
+          cnh_vencimento, como_conheceu, nome_amigo, cliente_desde, data_pagamento
         ) VALUES (
           ${data.tipoPessoa || 'Físico'},
           ${data.nome},
@@ -98,6 +109,8 @@ export default async function handler(request, response) {
           ${data.bairro || ''},
           ${data.estado || ''},
           ${data.cidade || ''},
+          ${data.codigoCidade || ''},
+          ${data.referencia || ''},
           ${data.statusAtivo === 'Sim'},
           ${data.emitirNF === 'Sim'},
           ${data.issRetido === 'Sim'},
@@ -114,7 +127,12 @@ export default async function handler(request, response) {
           ${parseCurrency(data.comissao)},
           ${data.pix || ''},
           ${data.restricao === 'Sim'},
-          ${data.observacao || ''}
+          ${data.observacao || ''},
+          ${data.cnhVencimento || null},
+          ${data.comoConheceu || ''},
+          ${data.nomeAmigo || ''},
+          ${data.clienteDesde || null},
+          ${data.dataPagamento || null}
         )
         RETURNING id;
       `;

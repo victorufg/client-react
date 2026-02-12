@@ -82,22 +82,22 @@ const ClientForm = ({ onSave, initialData }) => {
                 cnhVencimento: initialData.cnh_vencimento ? initialData.cnh_vencimento.split('T')[0] : '',
                 clienteDesde: initialData.cliente_desde ? initialData.cliente_desde.split('T')[0] : '',
                 statusAtivo: initialData.status_ativo ? 'Sim' : 'Não', // Assuming boolean or specific string
-                emitirNF: initialData.emitir_nf || '-',
-                issRetido: initialData.iss_retido || '-',
-                consumidorFinal: initialData.consumidor_final || '-',
-                produtorRural: initialData.produtor_rural || '-',
+                emitirNF: initialData.emitir_nf === true ? 'Sim' : (initialData.emitir_nf === false ? 'Não' : '-'),
+                issRetido: initialData.iss_retido === true ? 'Sim' : (initialData.iss_retido === false ? 'Não' : '-'),
+                consumidorFinal: initialData.consumidor_final === true ? 'Sim' : (initialData.consumidor_final === false ? 'Não' : '-'),
+                produtorRural: initialData.produtor_rural === true ? 'Sim' : (initialData.produtor_rural === false ? 'Não' : '-'),
                 tipoContribuinte: initialData.tipo_contribuinte || '-',
                 tipoCliente: initialData.tipo_cliente || '-',
-                creditoLiberado: initialData.credito_liberado || '',
-                valorGasto: initialData.valor_gasto || '',
-                saldo: initialData.saldo || '',
-                valorConsumido: initialData.valor_consumido || '',
-                valorCustos: initialData.valor_custos || '',
-                lucratividade: initialData.lucratividade || '',
-                comissao: initialData.comissao || '',
+                creditoLiberado: formatCurrency(initialData.credito_liberado),
+                valorGasto: formatCurrency(initialData.valor_gasto),
+                saldo: formatCurrency(initialData.saldo),
+                valorConsumido: formatCurrency(initialData.valor_consumido),
+                valorCustos: formatCurrency(initialData.valor_custos),
+                lucratividade: formatCurrency(initialData.lucratividade),
+                comissao: formatCurrency(initialData.comissao),
                 dataPagamento: initialData.data_pagamento ? initialData.data_pagamento.split('T')[0] : '',
                 pix: initialData.pix || '',
-                restricao: initialData.restricao || '-',
+                restricao: initialData.restricao === true ? 'Sim' : (initialData.restricao === false ? 'Não' : '-'),
                 observacao: initialData.observacao || ''
             });
 
@@ -311,13 +311,22 @@ const ClientForm = ({ onSave, initialData }) => {
     };
 
     const formatCurrency = (value) => {
+        if (value === null || value === undefined || value === '') return '';
+        // If it's already a number (coming from DB), format it directly
+        if (typeof value === 'number') {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+            }).format(value);
+        }
+        // If it's a string (user typing), remove non-digits and format
         const numericValue = value.replace(/\D/g, '');
-        const amount = new Intl.NumberFormat('pt-BR', {
+        return new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL',
             minimumFractionDigits: 2,
         }).format(numericValue / 100);
-        return amount;
     };
 
     const handleMoneyInput = (e) => {

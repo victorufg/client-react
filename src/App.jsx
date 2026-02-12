@@ -69,11 +69,41 @@ function App() {
     fetchClients();
   }, []);
 
-  const handleSaveClient = (savedClient) => {
-    // Ao salvar um novo cliente ou editar, recarregamos a lista
+  const handleSaveClient = (savedData) => {
+    // Ao salvar um novo cliente ou editar, recarregamos a lista em background
     fetchClients();
-    setEditingClient(null); // Clear editing state
-    setActiveTab('clientes'); // Return to list
+
+    // Manter na mesma página (não zerar editingClient nem mudar tab)
+    // Se era um novo cliente, agora ele tem ID, então atualizamos para "modo edição"
+    const normalizedData = {
+      ...savedData,
+      tipo_pessoa: savedData.tipoPessoa,
+      cpf_cnpj: savedData.cpfCnpj,
+      rg_inscricao: savedData.rgInscricao,
+      data_nascimento: savedData.dataNascimento,
+      relacao_familiar: savedData.relacaoFamiliar,
+      emitir_nf: savedData.emitirNF === 'Sim',
+      iss_retido: savedData.issRetido === 'Sim',
+      consumidor_final: savedData.consumidorFinal === 'Sim',
+      produtor_rural: savedData.produtorRural === 'Sim',
+      tipo_contribuinte: savedData.tipoContribuinte,
+      tipo_cliente: savedData.tipoCliente,
+      credito_liberado: savedData.creditoLiberado,
+      valor_gasto: savedData.valorGasto,
+      saldo: savedData.saldo,
+      valor_consumido: savedData.valorConsumido,
+      valor_custos: savedData.valorCustos,
+      lucratividade: savedData.lucratividade,
+      comissao: savedData.comissao,
+      cnh_vencimento: savedData.cnhVencimento,
+      como_conheceu: savedData.comoConheceu,
+      nome_amigo: savedData.nomeAmigo,
+      cliente_desde: savedData.clienteDesde,
+      data_pagamento: savedData.dataPagamento,
+      codigo_cidade: savedData.codigoCidade,
+      status_ativo: savedData.statusAtivo === 'Sim'
+    };
+    setEditingClient(normalizedData);
   };
 
   const handleEditClient = (client) => {
