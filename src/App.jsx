@@ -103,6 +103,7 @@ function App() {
       cliente_desde: savedData.clienteDesde,
       data_pagamento: savedData.dataPagamento,
       codigo_cidade: savedData.codigoCidade,
+      gestao_mensagens: Array.isArray(savedData.gestaoMensagens) ? savedData.gestaoMensagens.join(', ') : (savedData.gestaoMensagens || ''),
       status_ativo: savedData.statusAtivo === 'Sim',
       restricao: savedData.restricao === 'Sim'
     };

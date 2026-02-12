@@ -19,6 +19,12 @@ export default async function handler(request, response) {
       return parseFloat(cleanValue) || 0;
     };
 
+    // Helper to format gestao_mensagens as a comma-separated string
+    const formatGestaoMensagens = (val) => {
+      if (Array.isArray(val)) return val.join(', ');
+      return val || '';
+    };
+
     let result;
 
     if (id) {
@@ -48,6 +54,7 @@ export default async function handler(request, response) {
            cidade = ${data.cidade || ''},
            codigo_cidade = ${data.codigoCidade || ''},
            referencia = ${data.referencia || ''},
+           gestao_mensagens = ${formatGestaoMensagens(data.gestaoMensagens)},
            status_ativo = ${data.statusAtivo === 'Sim'},
            emitir_nf = ${data.emitirNF === 'Sim'},
            iss_retido = ${data.issRetido === 'Sim'},
@@ -81,7 +88,7 @@ export default async function handler(request, response) {
           data_nascimento, faixa_etaria, sexo, relacao_familiar, profissao,
           email, email_comercial, telefone, telefone_comercial,
           cep, logradouro, numero, complemento, bairro, estado, cidade,
-          codigo_cidade, referencia,
+          codigo_cidade, referencia, gestao_mensagens,
           status_ativo, emitir_nf, iss_retido, consumidor_final, produtor_rural,
           tipo_contribuinte, tipo_cliente, credito_liberado, valor_gasto,
           saldo, valor_consumido, valor_custos, lucratividade, comissao,
@@ -111,6 +118,7 @@ export default async function handler(request, response) {
           ${data.cidade || ''},
           ${data.codigoCidade || ''},
           ${data.referencia || ''},
+          ${formatGestaoMensagens(data.gestaoMensagens)},
           ${data.statusAtivo === 'Sim'},
           ${data.emitirNF === 'Sim'},
           ${data.issRetido === 'Sim'},

@@ -52,6 +52,7 @@ export default async function handler(request, response) {
         cidade VARCHAR(100),
         codigo_cidade VARCHAR(20),
         referencia TEXT,
+        gestao_mensagens TEXT,
         observacao TEXT
       );
     `;
@@ -64,6 +65,9 @@ export default async function handler(request, response) {
     await sql`ALTER TABLE clientes ALTER COLUMN saldo TYPE DECIMAL(15,2);`;
     await sql`ALTER TABLE clientes ALTER COLUMN valor_consumido TYPE DECIMAL(15,2);`;
     await sql`ALTER TABLE clientes ALTER COLUMN valor_custos TYPE DECIMAL(15,2);`;
+
+    // Adicionar novas colunas se não existirem
+    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS gestao_mensagens TEXT;`;
 
     return response.status(200).json({ message: 'Tabela criada ou atualizada com sucesso!', result });
   } catch (error) {

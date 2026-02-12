@@ -19,6 +19,7 @@ const ClientForm = ({ onSave, initialData }) => {
         cadastrais: true,
         fiscais: true,
         contato: true,
+        mensagens: true,
     });
 
     const [tipoPessoa, setTipoPessoa] = useState('Pessoa Física');
@@ -35,7 +36,8 @@ const ClientForm = ({ onSave, initialData }) => {
         email: '',
         emailComercial: '',
         telefone: '',
-        telefoneComercial: ''
+        telefoneComercial: '',
+        gestaoMensagens: [],
     });
 
     const [address, setAddress] = useState({
@@ -98,7 +100,8 @@ const ClientForm = ({ onSave, initialData }) => {
                 dataPagamento: initialData.data_pagamento ? initialData.data_pagamento.split('T')[0] : '',
                 pix: initialData.pix || '',
                 restricao: initialData.restricao === true ? 'Sim' : (initialData.restricao === false ? 'Não' : '-'),
-                observacao: initialData.observacao || ''
+                observacao: initialData.observacao || '',
+                gestaoMensagens: initialData.gestao_mensagens ? initialData.gestao_mensagens.split(', ') : [],
             });
 
             setAddress({
@@ -153,7 +156,8 @@ const ClientForm = ({ onSave, initialData }) => {
                 dataPagamento: '',
                 pix: '',
                 restricao: '-',
-                observacao: ''
+                observacao: '',
+                gestaoMensagens: [],
             });
             setAddress({
                 cep: '',
@@ -327,6 +331,16 @@ const ClientForm = ({ onSave, initialData }) => {
             currency: 'BRL',
             minimumFractionDigits: 2,
         }).format(numericValue / 100);
+    };
+
+    const handleCheckboxChange = (option) => {
+        setFormData(prev => {
+            const current = prev.gestaoMensagens || [];
+            const updated = current.includes(option)
+                ? current.filter(item => item !== option)
+                : [...current, option];
+            return { ...prev, gestaoMensagens: updated };
+        });
     };
 
     const handleMoneyInput = (e) => {
@@ -1006,6 +1020,33 @@ const ClientForm = ({ onSave, initialData }) => {
                                 onChange={handleInputChange}
                             ></textarea>
                         </div>
+                    </div>
+                </Section>
+
+                {/* Gestão de Mensagens */}
+                <Section
+                    title="Gestão de Mensagens"
+                    isOpen={sections.mensagens}
+                    onToggle={() => toggleSection('mensagens')}
+                >
+                    <div className="checkbox-grid">
+                        {[
+                            'Aniversário',
+                            'Coleta de Data de Aniversário',
+                            'Pós Venda',
+                            'Atualizar KM',
+                            'Lembrete de Cobrança',
+                            'Retirada de Veículo'
+                        ].map((option) => (
+                            <label key={option} className="checkbox-item">
+                                <input
+                                    type="checkbox"
+                                    checked={formData.gestaoMensagens?.includes(option)}
+                                    onChange={() => handleCheckboxChange(option)}
+                                />
+                                <span>{option}</span>
+                            </label>
+                        ))}
                     </div>
                 </Section>
 
