@@ -69,10 +69,16 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange, onUpdate }) =>
     }, [searchTerm, advancedFilters]);
 
     const filteredRows = (clients || []).filter(row => {
-        // Global Search
-        const matchesSearch = Object.values(row).some(value => {
-            if (value === null || value === undefined) return false;
-            return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+        // Global Search - split into words and check if all words are present somewhere in the row
+        const searchWords = searchTerm.toLowerCase().trim().split(/\s+/).filter(word => word.length > 0);
+
+        const matchesSearch = searchWords.length === 0 || searchWords.every(word => {
+            return Object.entries(row).some(([key, value]) => {
+                // Skip internal rawData or objects during global search for performance and relevance
+                if (key === 'rawData' || typeof value === 'object') return false;
+                if (value === null || value === undefined) return false;
+                return value.toString().toLowerCase().includes(word);
+            });
         });
 
         // Advanced Filters (including Status)
