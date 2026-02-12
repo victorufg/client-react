@@ -33,12 +33,18 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange, onUpdate }) =>
     ]);
 
     const [advancedFilters, setAdvancedFilters] = React.useState({
+        cliente: '',
+        cpfCnpj: '',
+        apelido: '',
+        sexo: '',
+        dataCadastro: '',
+        contatos: '',
+        restricao: '',
         cidade: '',
         estado: '',
-        tipo: '',
-        sexo: '',
         profissao: '',
-        dataCadastro: '',
+        faixaEtaria: '',
+        relacaoFamiliar: '',
         status: ''
     });
 

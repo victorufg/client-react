@@ -175,16 +175,19 @@
 }
 
 .advanced-filters {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    animation: slideDown 0.2s ease-out;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.03);
+    animation: slideDown 0.3s ease-out;
 }
 
 .advanced-filters .filter-row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1.25rem 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem 1.25rem;
     border: none;
     padding: 0;
 }
@@ -192,28 +195,29 @@
 .filter-field {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.5rem;
 }
 
-.field-label {
-    font-size: 0.7rem;
+.filter-field label {
+    font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-left: 0.2rem;
+    margin-bottom: 0.1rem;
 }
-
 
 .advanced-filters .modern-select,
 .advanced-filters .modern-input {
     width: 100%;
+    min-width: 0;
+    /* Important: allow grid to shrink them */
 }
 
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-15px);
     }
 
     to {
@@ -221,6 +225,7 @@
         transform: translateY(0);
     }
 }
+
 
 .btn-outline.active {
     background-color: var(--surface);
