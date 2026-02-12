@@ -84,6 +84,19 @@ const ClientTable = ({ clients }) => {
         );
     };
 
+    const [openMenuId, setOpenMenuId] = React.useState(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = () => setOpenMenuId(null);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
+    const toggleMenu = (e, id) => {
+        e.stopPropagation();
+        setOpenMenuId(openMenuId === id ? null : id);
+    };
+
     const isVisible = (key) => visibleColumns.includes(key);
 
     return (
@@ -130,9 +143,25 @@ const ClientTable = ({ clients }) => {
                         {filteredRows.map((row) => (
                             <tr key={row.id} className="table-row">
                                 <td className="td-action">
-                                    <button className="action-btn">
-                                        <MoreHorizontal size={18} />
-                                    </button>
+                                    <div className="action-container">
+                                        <button
+                                            className={`action-btn ${openMenuId === row.id ? 'active' : ''}`}
+                                            onClick={(e) => toggleMenu(e, row.id)}
+                                        >
+                                            <MoreHorizontal size={18} />
+                                        </button>
+
+                                        {openMenuId === row.id && (
+                                            <div className="action-menu">
+                                                <button className="menu-item" onClick={() => console.log('Editar', row.id)}>
+                                                    <Edit size={14} /> Editar
+                                                </button>
+                                                <button className="menu-item delete" onClick={() => console.log('Excluir', row.id)}>
+                                                    <Trash2 size={14} /> Excluir
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </td>
                                 {isVisible('id') && <td className="td-id">#{row.id}</td>}
                                 {isVisible('tipo') && <td><span className="badge-tipo">{row.tipo}</span></td>}
