@@ -1,8 +1,8 @@
 import { sql } from '@vercel/postgres';
 
 export default async function handler(request, response) {
-    try {
-        const result = await sql`
+  try {
+    const result = await sql`
       CREATE TABLE IF NOT EXISTS clientes (
         id SERIAL PRIMARY KEY,
         tipo_pessoa VARCHAR(20),
@@ -21,6 +21,10 @@ export default async function handler(request, response) {
         nome_amigo VARCHAR(255),
         status_ativo BOOLEAN DEFAULT TRUE,
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        email VARCHAR(255),
+        email_comercial VARCHAR(255),
+        telefone VARCHAR(20),
+        telefone_comercial VARCHAR(20),
         emitir_nf BOOLEAN,
         iss_retido BOOLEAN,
         consumidor_final BOOLEAN,
@@ -49,8 +53,14 @@ export default async function handler(request, response) {
         observacao TEXT
       );
     `;
-        return response.status(200).json({ message: 'Tabela criada com sucesso!', result });
-    } catch (error) {
-        return response.status(500).json({ error: error.message });
-    }
+    // Comandos de alteração para garantir que novas colunas existam se a tabela já foi criada
+    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS email VARCHAR(255);`;
+    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS email_comercial VARCHAR(255);`;
+    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS telefone VARCHAR(20);`;
+    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS telefone_comercial VARCHAR(20);`;
+
+    return response.status(200).json({ message: 'Tabela criada ou atualizada com sucesso!', result });
+  } catch (error) {
+    return response.status(500).json({ error: error.message });
+  }
 }

@@ -9,59 +9,50 @@ import './App.css'; // We'll create this for specific App-level layout if needed
 function App() {
   const [activeTab, setActiveTab] = useState('clientes');
 
-  // Initialize state from LocalStorage or default mock data
-  const [clients, setClients] = useState(() => {
-    const savedClients = localStorage.getItem('clients_db');
-    if (savedClients) {
-      return JSON.parse(savedClients);
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchClients = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/get-clients');
+      if (!response.ok) throw new Error('Falha ao carregar clientes');
+      const data = await response.json();
+
+      // Mapeia os dados do banco para o formato esperado pelos componentes
+      const mappedClients = data.map(c => ({
+        id: c.id,
+        tipo: c.tipo_pessoa || 'Físico',
+        cliente: c.nome,
+        apelido: c.apelido || '',
+        endereco: c.logradouro ? `${c.logradouro}${c.numero ? ', ' + c.numero : ''}${c.bairro ? ' - ' + c.bairro : ''}` : 'Endereço não informado',
+        cidade: c.cidade || '',
+        estado: c.estado || '',
+        email: c.email || '',
+        contatos: c.telefone || '',
+        dataCadastro: c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '--/--',
+        aniversario: c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '--/--',
+        cpfCnpj: c.cpf_cnpj || '',
+        sexo: c.sexo || 'M',
+        status: c.status_ativo ? 'Ativo' : 'Inativo',
+        ...c // Mantém todos os outros campos originais
+      }));
+
+      setClients(mappedClients);
+    } catch (error) {
+      console.error('Erro ao buscar clientes do banco:', error);
+    } finally {
+      setLoading(false);
     }
-    return Array.from({ length: 5 }, (_, index) => ({
-      id: index + 1,
-      tipo: index % 3 === 0 ? 'Jurídico' : 'Físico',
-      cliente: `Cliente Exemplo ${index + 1}`,
-      apelido: `Apelido ${index + 1}`,
-      endereco: 'Rua Exemplo, 123',
-      cidade: index % 2 === 0 ? 'São Paulo' : 'Rio de Janeiro',
-      estado: index % 2 === 0 ? 'SP' : 'RJ',
-      email: 'email@exemplo.com',
-      contatos: '(11) 99999-9999',
-      dataCadastro: '10/02/2026',
-      aniversario: '01/01',
-      cpfCnpj: '000.000.000-00',
-      sexo: index % 2 === 0 ? 'M' : 'F',
-      profissao: index % 2 === 0 ? 'Desenvolvedor' : 'Designer',
-      faixaEtaria: '25-34',
-      relacaoFamiliar: 'Solteiro',
-      restricao: 'Não',
-      status: index % 2 === 0 ? 'Ativo' : 'Inativo',
-    }));
-  });
+  };
 
-  // Sync state to LocalStorage whenever clients change
   useEffect(() => {
-    localStorage.setItem('clients_db', JSON.stringify(clients));
-  }, [clients]);
+    fetchClients();
+  }, []);
 
-  const handleAddClient = (formData) => {
-    const newClient = {
-      id: clients.length + 1,
-      tipo: formData.tipoPessoa || 'Físico',
-      cliente: formData.nome,
-      apelido: formData.apelido || '',
-      endereco: formData.logradouro || 'Rua Nova, 456',
-      cidade: formData.cidade || 'São Paulo',
-      estado: formData.estado || 'SP',
-      email: formData.email || 'novo@email.com',
-      contatos: formData.telefone || '(11) 90000-0000',
-      dataCadastro: new Date().toLocaleDateString('pt-BR'),
-      aniversario: formData.dataNascimento ? formData.dataNascimento.substring(5, 10).split('-').reverse().join('/') : '--/--',
-      cpfCnpj: formData.cpfCnpj || '000.000.000-00',
-      sexo: formData.sexo || 'M',
-      status: 'Ativo',
-      ...formData // Include all other fields
-    };
-
-    setClients([newClient, ...clients]);
+  const handleAddClient = (newClientData) => {
+    // Ao salvar um novo cliente, recarregamos a lista do banco para garantir sincronia
+    fetchClients();
     setActiveTab('clientes');
   };
 

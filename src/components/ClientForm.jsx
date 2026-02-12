@@ -496,19 +496,49 @@ const ClientForm = ({ onSave }) => {
                     <div className="form-grid">
                         <div className="form-group col-span-2">
                             <label>Contato Particular</label>
-                            <input type="text" className="modern-input" placeholder="(00) 00000-0000" onChange={handlePhoneInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="telefone"
+                                placeholder="(00) 00000-0000"
+                                onChange={(e) => {
+                                    handlePhoneInput(e);
+                                    handleGeneralChange(e);
+                                }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Contato Comercial</label>
-                            <input type="text" className="modern-input" placeholder="(00) 0000-0000" onChange={handleLandlineInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="telefoneComercial"
+                                placeholder="(00) 0000-0000"
+                                onChange={(e) => {
+                                    handleLandlineInput(e);
+                                    handleGeneralChange(e);
+                                }}
+                            />
                         </div>
                         <div className="form-group col-span-4">
                             <label>Email Particular</label>
-                            <input type="email" className="modern-input" />
+                            <input
+                                type="email"
+                                className="modern-input"
+                                name="email"
+                                value={formData.email || ''}
+                                onChange={handleGeneralChange}
+                            />
                         </div>
                         <div className="form-group col-span-4">
                             <label>Email Comercial</label>
-                            <input type="email" className="modern-input" />
+                            <input
+                                type="email"
+                                className="modern-input"
+                                name="emailComercial"
+                                value={formData.emailComercial || ''}
+                                onChange={handleGeneralChange}
+                            />
                         </div>
 
                         <div className="form-group col-span-2">
