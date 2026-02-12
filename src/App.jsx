@@ -85,6 +85,25 @@ function App() {
     setActiveTab('cadastrar');
   };
 
+  const handleDeleteClient = async (client) => {
+    if (window.confirm(`Tem certeza que deseja excluir o cliente ${client.cliente}?`)) {
+      try {
+        const response = await fetch(`/api/delete-client?id=${client.id}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          fetchClients(); // Refresh list
+        } else {
+          alert('Erro ao excluir cliente');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir:', error);
+        alert('Erro ao excluir cliente');
+      }
+    }
+  };
+
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     // If switching away from 'cadastrar' or manually clicking 'clientes', clear edit state?
@@ -123,6 +142,7 @@ function App() {
             <ClientTable
               clients={clients}
               onEdit={handleEditClient}
+              onDelete={handleDeleteClient}
             />
             <Pagination />
           </>

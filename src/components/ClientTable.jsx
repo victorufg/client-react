@@ -23,7 +23,7 @@ const getAvatarColor = (name) => {
     return colors[Math.abs(hash) % colors.length];
 };
 
-const ClientTable = ({ clients, onEdit }) => {
+const ClientTable = ({ clients, onEdit, onDelete }) => {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [currentPage, setCurrentPage] = React.useState(1);
     const [itemsPerPage, setItemsPerPage] = React.useState(100);
@@ -299,7 +299,13 @@ const ClientTable = ({ clients, onEdit }) => {
                         }}>
                             <Edit size={14} /> Editar
                         </button>
-                        <button className="menu-item delete" onClick={() => { console.log('Excluir', openMenuId); setOpenMenuId(null); }}>
+                        <button className="menu-item delete" onClick={() => {
+                            if (onDelete) {
+                                const clientToDelete = clients.find(c => c.id === openMenuId);
+                                if (clientToDelete) onDelete(clientToDelete);
+                            }
+                            setOpenMenuId(null);
+                        }}>
                             <Trash2 size={14} /> Excluir
                         </button>
                     </div>
