@@ -62,7 +62,7 @@ export default async function handler(request, response) {
         ${parseCurrency(data.lucratividade)},
         ${parseCurrency(data.comissao)},
         ${data.pix || ''},
-        ${data.restricao || 'Não'},
+        ${data.restricao === 'Sim'},
         ${data.observacao || ''}
       )
       RETURNING id;

@@ -35,6 +35,7 @@ function App() {
         aniversario: c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '-',
         cpfCnpj: c.cpf_cnpj || '-',
         sexo: c.sexo || '-',
+        restricao: c.restricao === true ? 'Sim' : (c.restricao === false ? 'Não' : '-'),
         status: c.status_ativo ? 'Ativo' : 'Inativo'
       }));
 
