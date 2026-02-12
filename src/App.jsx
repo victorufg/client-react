@@ -51,6 +51,7 @@ function App() {
           cpfCnpj: c.cpf_cnpj || '-',
           sexo: c.sexo || '-',
           restricao: c.restricao === true ? 'Sim' : (c.restricao === false ? 'Não' : '-'),
+          gestaoMensagens: c.gestao_mensagens || '-',
           status: c.status_ativo ? 'Ativo' : 'Inativo',
           // Preserve original raw data for editing
           rawData: c
