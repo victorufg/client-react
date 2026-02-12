@@ -21,6 +21,7 @@ function App() {
 
       // Mapeia os dados do banco para o formato esperado pelos componentes
       const mappedClients = data.map(c => ({
+        ...c, // Mantém todos os outros campos originais
         id: c.id,
         tipo: c.tipo_pessoa || 'Físico',
         cliente: c.nome,
@@ -34,8 +35,7 @@ function App() {
         aniversario: c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '--/--',
         cpfCnpj: c.cpf_cnpj || '',
         sexo: c.sexo || 'M',
-        status: c.status_ativo ? 'Ativo' : 'Inativo',
-        ...c // Mantém todos os outros campos originais
+        status: c.status_ativo ? 'Ativo' : 'Inativo'
       }));
 
       setClients(mappedClients);

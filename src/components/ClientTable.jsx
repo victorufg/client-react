@@ -60,14 +60,17 @@ const ClientTable = ({ clients }) => {
 
     const filteredRows = (clients || []).filter(row => {
         // Global Search
-        const matchesSearch = Object.values(row).some(value =>
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const matchesSearch = Object.values(row).some(value => {
+            if (value === null || value === undefined) return false;
+            return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+        });
 
         // Advanced Filters (including Status)
         const matchesAdvanced = Object.entries(advancedFilters).every(([key, value]) => {
             if (!value) return true; // Skip empty filters
-            return row[key].toString().toLowerCase().includes(value.toLowerCase());
+            const rowValue = row[key];
+            if (rowValue === null || rowValue === undefined) return false;
+            return rowValue.toString().toLowerCase().includes(value.toLowerCase());
         });
 
         return matchesSearch && matchesAdvanced;
