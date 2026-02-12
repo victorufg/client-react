@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { MoreHorizontal, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import '../styles/ClientTable.css';
 import Filters from './Filters';
@@ -85,16 +86,55 @@ const ClientTable = ({ clients }) => {
     };
 
     const [openMenuId, setOpenMenuId] = React.useState(null);
+    const [menuPosition, setMenuPosition] = React.useState({ top: 0, left: 0 });
+    const menuRef = React.useRef(null);
 
     React.useEffect(() => {
-        const handleClickOutside = () => setOpenMenuId(null);
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, []);
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                // Do nothing here, rely on global click listener below
+            }
+        };
+
+        const closeMenu = () => setOpenMenuId(null);
+        if (openMenuId) {
+            window.addEventListener('click', closeMenu);
+        }
+        return () => window.removeEventListener('click', closeMenu);
+    }, [openMenuId]);
+
+    // Handle scroll to update position or close
+    React.useEffect(() => {
+        const handleScroll = () => {
+            if (openMenuId) setOpenMenuId(null);
+        };
+        if (openMenuId) {
+            window.addEventListener('scroll', handleScroll, true);
+        }
+        return () => window.removeEventListener('scroll', handleScroll, true);
+    }, [openMenuId]);
 
     const toggleMenu = (e, id) => {
         e.stopPropagation();
-        setOpenMenuId(openMenuId === id ? null : id);
+        e.nativeEvent.stopImmediatePropagation();
+
+        if (openMenuId === id) {
+            setOpenMenuId(null);
+        } else {
+            const rect = e.currentTarget.getBoundingClientRect();
+            // Check if there is space below, otherwise open up
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const openUp = spaceBelow < 150; // approximate menu height
+
+            setMenuPosition({
+                top: openUp ? (rect.top + window.scrollY - 10) : (rect.bottom + window.scrollY + 5),
+                left: rect.right + window.scrollX,
+                transformOrigin: openUp ? 'bottom right' : 'top right',
+                transform: `translateX(-100%) ${openUp ? 'translateY(-100%)' : ''}`,
+                isUp: openUp
+            });
+            setOpenMenuId(id);
+        }
     };
 
     const isVisible = (key) => visibleColumns.includes(key);
@@ -140,76 +180,89 @@ const ClientTable = ({ clients }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredRows.map((row, index) => {
-                            const isLastRows = index >= filteredRows.length - 2 && filteredRows.length > 3;
-
-                            return (
-                                <tr key={row.id} className="table-row">
-                                    <td className="td-action">
-                                        <div className="action-container">
-                                            <button
-                                                className={`action-btn ${openMenuId === row.id ? 'active' : ''}`}
-                                                onClick={(e) => toggleMenu(e, row.id)}
-                                            >
-                                                <MoreHorizontal size={18} />
-                                            </button>
-
-                                            {openMenuId === row.id && (
-                                                <div className={`action-menu ${isLastRows ? 'open-up' : ''}`}>
-                                                    <button className="menu-item" onClick={() => console.log('Editar', row.id)}>
-                                                        <Edit size={14} /> Editar
-                                                    </button>
-                                                    <button className="menu-item delete" onClick={() => console.log('Excluir', row.id)}>
-                                                        <Trash2 size={14} /> Excluir
-                                                    </button>
-                                                </div>
-                                            )}
+                        {filteredRows.map((row) => (
+                            <tr key={row.id} className="table-row">
+                                <td className="td-action">
+                                    <div className="action-container">
+                                        <button
+                                            className={`action-btn ${openMenuId === row.id ? 'active' : ''}`}
+                                            onClick={(e) => toggleMenu(e, row.id)}
+                                        >
+                                            <MoreHorizontal size={18} />
+                                        </button>
+                                    </div>
+                                </td>
+                                {isVisible('id') && <td className="td-id">#{row.id}</td>}
+                                {isVisible('tipo') && <td><span className="badge-tipo">{row.tipo}</span></td>}
+                                {isVisible('cliente') && <td>
+                                    <div className="client-cell">
+                                        <div
+                                            className="avatar"
+                                            style={{ backgroundColor: getAvatarColor(row.cliente) }}
+                                        >
+                                            {getInitials(row.cliente)}
                                         </div>
-                                    </td>
-                                    {isVisible('id') && <td className="td-id">#{row.id}</td>}
-                                    {isVisible('tipo') && <td><span className="badge-tipo">{row.tipo}</span></td>}
-                                    {isVisible('cliente') && <td>
-                                        <div className="client-cell">
-                                            <div
-                                                className="avatar"
-                                                style={{ backgroundColor: getAvatarColor(row.cliente) }}
-                                            >
-                                                {getInitials(row.cliente)}
-                                            </div>
-                                            <span className="client-name">{row.cliente}</span>
-                                        </div>
-                                    </td>}
-                                    {isVisible('apelido') && <td className="text-muted">{row.apelido}</td>}
-                                    {isVisible('endereco') && <td className="text-muted">{row.endereco}</td>}
-                                    {isVisible('cidade') && <td className="text-muted">{row.cidade}</td>}
-                                    {isVisible('estado') && <td className="text-muted">{row.estado}</td>}
-                                    {isVisible('email') && <td className="text-muted">{row.email}</td>}
-                                    {isVisible('contatos') && <td className="text-muted">{row.contatos}</td>}
-                                    {isVisible('dataCadastro') && <td>{row.dataCadastro}</td>}
-                                    {isVisible('aniversario') && <td>{row.aniversario}</td>}
-                                    {isVisible('cpfCnpj') && <td className="font-mono">{row.cpfCnpj}</td>}
-                                    {isVisible('sexo') && <td><span className={`sexo-badge ${(row.sexo || '').toLowerCase()}`}>{row.sexo || '-'}</span></td>}
-                                    {isVisible('profissao') && <td className="text-muted">{row.profissao}</td>}
-                                    {isVisible('faixaEtaria') && <td className="text-muted">{row.faixaEtaria}</td>}
-                                    {isVisible('relacaoFamiliar') && <td className="text-muted">{row.relacaoFamiliar}</td>}
-                                    {isVisible('restricao') && <td>{row.restricao}</td>}
-                                    {isVisible('status') && <td>
-                                        <span style={{
-                                            padding: '4px 8px',
-                                            borderRadius: '12px',
-                                            fontSize: '0.8rem',
-                                            backgroundColor: row.status === 'Ativo' ? '#dcfce7' : '#f3f4f6',
-                                            color: row.status === 'Ativo' ? '#166534' : '#374151'
-                                        }}>
-                                            {row.status}
-                                        </span>
-                                    </td>}
-                                </tr>
-                            );
-                        })}
+                                        <span className="client-name">{row.cliente}</span>
+                                    </div>
+                                </td>}
+                                {isVisible('apelido') && <td className="text-muted">{row.apelido}</td>}
+                                {isVisible('endereco') && <td className="text-muted">{row.endereco}</td>}
+                                {isVisible('cidade') && <td className="text-muted">{row.cidade}</td>}
+                                {isVisible('estado') && <td className="text-muted">{row.estado}</td>}
+                                {isVisible('email') && <td className="text-muted">{row.email}</td>}
+                                {isVisible('contatos') && <td className="text-muted">{row.contatos}</td>}
+                                {isVisible('dataCadastro') && <td>{row.dataCadastro}</td>}
+                                {isVisible('aniversario') && <td>{row.aniversario}</td>}
+                                {isVisible('cpfCnpj') && <td className="font-mono">{row.cpfCnpj}</td>}
+                                {isVisible('sexo') && <td><span className={`sexo-badge ${(row.sexo || '').toLowerCase()}`}>{row.sexo || '-'}</span></td>}
+                                {isVisible('profissao') && <td className="text-muted">{row.profissao}</td>}
+                                {isVisible('faixaEtaria') && <td className="text-muted">{row.faixaEtaria}</td>}
+                                {isVisible('relacaoFamiliar') && <td className="text-muted">{row.relacaoFamiliar}</td>}
+                                {isVisible('restricao') && <td>{row.restricao}</td>}
+                                {isVisible('status') && <td>
+                                    <span style={{
+                                        padding: '4px 8px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.8rem',
+                                        backgroundColor: row.status === 'Ativo' ? '#dcfce7' : '#f3f4f6',
+                                        color: row.status === 'Ativo' ? '#166534' : '#374151'
+                                    }}>
+                                        {row.status}
+                                    </span>
+                                </td>}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
+
+            {openMenuId && typeof document !== 'undefined' && ReactDOM.createPortal(
+                <div
+                    ref={menuRef}
+                    className={`action-menu ${menuPosition.isUp ? 'open-up' : ''}`}
+                    style={{
+                        position: 'absolute',
+                        top: Math.round(menuPosition.top),
+                        left: Math.round(menuPosition.left),
+                        right: 'auto',
+                        transform: menuPosition.transform,
+                        transformOrigin: menuPosition.transformOrigin,
+                        zIndex: 9999,
+                        marginTop: 0,
+                        marginBottom: 0,
+                        display: 'block'
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button className="menu-item" onClick={() => { console.log('Editar', openMenuId); setOpenMenuId(null); }}>
+                        <Edit size={14} /> Editar
+                    </button>
+                    <button className="menu-item delete" onClick={() => { console.log('Excluir', openMenuId); setOpenMenuId(null); }}>
+                        <Trash2 size={14} /> Excluir
+                    </button>
+                </div>,
+                document.body
+            )}
         </div>
     );
 };
