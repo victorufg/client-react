@@ -62,7 +62,7 @@ const Filters = ({
                                 value={advancedFilters.status}
                                 onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, status: e.target.value })}
                             >
-                                <option value="">Status: Todos</option>
+                                <option value="">-</option>
                                 <option value="Ativo">Ativos</option>
                                 <option value="Inativo">Inativos</option>
                             </select>
@@ -86,7 +86,7 @@ const Filters = ({
                                 value={advancedFilters.tipo}
                                 onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, tipo: e.target.value })}
                             >
-                                <option value="">Tipo: Todos</option>
+                                <option value="">-</option>
                                 <option value="Físico">Físico</option>
                                 <option value="Jurídico">Jurídico</option>
                             </select>
@@ -95,7 +95,7 @@ const Filters = ({
                                 value={advancedFilters.sexo}
                                 onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, sexo: e.target.value })}
                             >
-                                <option value="">Sexo: Todos</option>
+                                <option value="">-</option>
                                 <option value="M">Masculino</option>
                                 <option value="F">Feminino</option>
                             </select>

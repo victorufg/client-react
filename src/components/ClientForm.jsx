@@ -378,6 +378,7 @@ const ClientForm = ({ onSave, initialData }) => {
                                 onChange={(e) => setTipoPessoa(e.target.value)}
                                 autoFocus
                             >
+                                <option>-</option>
                                 <option>Pessoa Física</option>
                                 <option>Pessoa Jurídica</option>
                             </select>
@@ -450,6 +451,7 @@ const ClientForm = ({ onSave, initialData }) => {
                         <div className="form-group col-span-2">
                             <label>Sexo</label>
                             <select className="modern-input">
+                                <option>-</option>
                                 <option>Homem</option>
                                 <option>Mulher</option>
                                 <option>Outro</option>
@@ -458,6 +460,7 @@ const ClientForm = ({ onSave, initialData }) => {
                         <div className="form-group col-span-2">
                             <label>Relação Familiar</label>
                             <select className="modern-input">
+                                <option>-</option>
                                 <option>Pai / Mãe</option>
                             </select>
                         </div>
@@ -484,7 +487,7 @@ const ClientForm = ({ onSave, initialData }) => {
                                 value={formData.comoConheceu || ''}
                                 onChange={(e) => handleInputChange({ target: { name: 'comoConheceu', value: e.target.value } })}
                             >
-                                <option value="">Selecione...</option>
+                                <option value="">-</option>
                                 <option>Internet</option>
                                 <option>Google</option>
                                 <option>Facebook</option>
@@ -510,7 +513,7 @@ const ClientForm = ({ onSave, initialData }) => {
                         )}
                         <div className="form-group col-span-2">
                             <label>Status Ativo?</label>
-                            <select className="modern-input"><option>Sim</option><option>Não</option></select>
+                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Data de cadastro</label>
@@ -533,23 +536,24 @@ const ClientForm = ({ onSave, initialData }) => {
                     <div className="form-grid">
                         <div className="form-group col-span-2">
                             <label>Emitir Notas Fiscais?</label>
-                            <select className="modern-input"><option>Sim</option><option>Não</option></select>
+                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>ISS retido na fonte?</label>
-                            <select className="modern-input"><option>Sim</option><option>Não</option></select>
+                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Consumidor final?</label>
-                            <select className="modern-input"><option>Sim</option><option>Não</option></select>
+                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Produtor Rural?</label>
-                            <select className="modern-input"><option>Sim</option><option>Não</option></select>
+                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Tipo de Contribuinte</label>
                             <select className="modern-input">
+                                <option>-</option>
                                 <option>Não Contribuinte</option>
                                 <option>Contribuinte ICMS</option>
                                 <option>Contribuinte Isento</option>
@@ -558,6 +562,7 @@ const ClientForm = ({ onSave, initialData }) => {
                         <div className="form-group col-span-2">
                             <label>Tipo de Cliente</label>
                             <select className="modern-input">
+                                <option>-</option>
                                 <option>Atacado</option>
                                 <option>Varejo</option>
                                 <option>Lojista</option>
@@ -603,6 +608,7 @@ const ClientForm = ({ onSave, initialData }) => {
                         <div className="form-group col-span-2">
                             <label>Restrição?</label>
                             <select className="modern-input">
+                                <option>-</option>
                                 <option>Não</option>
                                 <option>Sim</option>
                             </select>
@@ -725,7 +731,7 @@ const ClientForm = ({ onSave, initialData }) => {
                                 value={address.estado}
                                 onChange={handleAddressChange}
                             >
-                                <option value="">Selecione</option>
+                                <option value="">-</option>
                                 <option value="AC">Acre - AC</option>
                                 <option value="AL">Alagoas - AL</option>
                                 <option value="AP">Amapá - AP</option>
