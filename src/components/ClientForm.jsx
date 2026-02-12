@@ -43,7 +43,10 @@ const ClientForm = ({ onSave }) => {
         }
     };
 
-    const handleSave = () => {
+    const [loading, setLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState({ text: '', type: '' });
+
+    const handleSave = async () => {
         const newErrors = {};
         if (!formData.nome || !formData.nome.trim()) {
             newErrors.nome = 'Campo obrigatório';
@@ -58,14 +61,42 @@ const ClientForm = ({ onSave }) => {
             return;
         }
 
-        if (onSave) {
-            onSave({
-                ...formData,
-                ...address,
-                tipoPessoa,
-                dataNascimento,
-                faixaEtaria
+        setLoading(true);
+        setStatusMessage({ text: 'Salvando no banco de dados...', type: 'info' });
+
+        const payload = {
+            ...formData,
+            ...address,
+            tipoPessoa,
+            dataNascimento,
+            faixaEtaria
+        };
+
+        try {
+            const response = await fetch('/api/save-client', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
+
+            if (!response.ok) {
+                throw new Error('Erro ao salvar no banco de dados');
+            }
+
+            const result = await response.json();
+            setStatusMessage({ text: 'Cliente salvo com sucesso!', type: 'success' });
+
+            if (onSave) {
+                onSave({
+                    id: result.id,
+                    ...payload
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            setStatusMessage({ text: 'Falha ao salvar: ' + error.message, type: 'error' });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -195,8 +226,17 @@ const ClientForm = ({ onSave }) => {
     return (
         <div className="form-container">
             <div className="form-header">
-                <button className="btn-save" onClick={handleSave}>
-                    SALVAR <Save size={18} />
+                {statusMessage.text && (
+                    <div className={`status-message ${statusMessage.type}`}>
+                        {statusMessage.text}
+                    </div>
+                )}
+                <button
+                    className="btn-save"
+                    onClick={handleSave}
+                    disabled={loading}
+                >
+                    {loading ? 'SALVANDO...' : 'SALVAR'} <Save size={18} />
                 </button>
             </div>
 
