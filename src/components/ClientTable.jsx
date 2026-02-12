@@ -29,7 +29,7 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
     const [itemsPerPage, setItemsPerPage] = React.useState(100);
 
     const [visibleColumns, setVisibleColumns] = React.useState([
-        'id', 'tipo', 'cliente', 'endereco', 'email', 'contatos', 'dataCadastro', 'aniversario', 'cpfCnpj', 'sexo', 'gestaoMensagens'
+        'id', 'tipo', 'cliente', 'endereco', 'email', 'contatos', 'dataCadastro', 'aniversario', 'cpfCnpj', 'sexo'
     ]);
 
     const [advancedFilters, setAdvancedFilters] = React.useState({
@@ -59,7 +59,6 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
         { key: 'profissao', label: 'Profissão' },
         { key: 'faixaEtaria', label: 'Faixa Etária' },
         { key: 'relacaoFamiliar', label: 'Relação Familiar' },
-        { key: 'gestaoMensagens', label: 'Gestão de Mensagens' },
         { key: 'restricao', label: 'Restrição' },
         { key: 'status', label: 'Status' },
     ];
@@ -192,7 +191,6 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                             {isVisible('profissao') && <th>Profissão</th>}
                             {isVisible('faixaEtaria') && <th>Faixa Etária</th>}
                             {isVisible('relacaoFamiliar') && <th>Relação Familiar</th>}
-                            {isVisible('gestaoMensagens') && <th>Gestão de Mensagens</th>}
                             {isVisible('restricao') && <th>Restrição</th>}
                             {isVisible('status') && <th>Status</th>}
                         </tr>
@@ -242,7 +240,6 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                                 {isVisible('profissao') && <td className="text-muted">{row.profissao}</td>}
                                 {isVisible('faixaEtaria') && <td className="text-muted">{row.faixaEtaria}</td>}
                                 {isVisible('relacaoFamiliar') && <td className="text-muted">{row.relacaoFamiliar}</td>}
-                                {isVisible('gestaoMensagens') && <td className="text-muted">{row.gestaoMensagens}</td>}
                                 {isVisible('restricao') && <td>{row.restricao}</td>}
                                 {isVisible('status') && <td>
                                     <span style={{
@@ -310,8 +307,10 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                         </button>
 
                         <button className="menu-item" onClick={() => {
-                            // Placeholder for Message Management
-                            alert('Gestão de Mensagens: Funcionalidade em desenvolvimento.');
+                            const client = clients.find(c => c.id === openMenuId);
+                            if (client) {
+                                alert(`Gestão de Mensagens - ${client.cliente}:\n\nOpções selecionadas:\n${client.gestaoMensagens || 'Nenhuma opção selecionada'}`);
+                            }
                             setOpenMenuId(null);
                         }}>
                             <MessageSquare size={14} /> Gestão de Mensagens
