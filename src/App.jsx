@@ -21,20 +21,20 @@ function App() {
 
       // Mapeia os dados do banco para o formato esperado pelos componentes
       const mappedClients = data.map(c => ({
-        ...c, // Mantém todos os outros campos originais
+        ...c,
         id: c.id,
-        tipo: c.tipo_pessoa || 'Físico',
-        cliente: c.nome,
-        apelido: c.apelido || '',
-        endereco: c.logradouro ? `${c.logradouro}${c.numero ? ', ' + c.numero : ''}${c.bairro ? ' - ' + c.bairro : ''}` : 'Endereço não informado',
-        cidade: c.cidade || '',
-        estado: c.estado || '',
-        email: c.email || '',
-        contatos: c.telefone || '',
-        dataCadastro: c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '--/--',
-        aniversario: c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '--/--',
-        cpfCnpj: c.cpf_cnpj || '',
-        sexo: c.sexo || 'M',
+        tipo: c.tipo_pessoa || '-',
+        cliente: c.nome || '-',
+        apelido: c.apelido || '-',
+        endereco: c.logradouro ? `${c.logradouro}${c.numero ? ', ' + c.numero : ''}${c.bairro ? ' - ' + c.bairro : ''}` : '-',
+        cidade: c.cidade || '-',
+        estado: c.estado || '-',
+        email: c.email || '-',
+        contatos: c.telefone || '-',
+        dataCadastro: c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-',
+        aniversario: c.data_nascimento ? new Date(c.data_nascimento).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) : '-',
+        cpfCnpj: c.cpf_cnpj || '-',
+        sexo: c.sexo || '-',
         status: c.status_ativo ? 'Ativo' : 'Inativo'
       }));
 

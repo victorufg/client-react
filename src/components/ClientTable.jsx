@@ -156,7 +156,7 @@ const ClientTable = ({ clients }) => {
                                 {isVisible('dataCadastro') && <td>{row.dataCadastro}</td>}
                                 {isVisible('aniversario') && <td>{row.aniversario}</td>}
                                 {isVisible('cpfCnpj') && <td className="font-mono">{row.cpfCnpj}</td>}
-                                {isVisible('sexo') && <td><span className={`sexo-badge ${(row.sexo || '').toLowerCase()}`}>{row.sexo || 'N/A'}</span></td>}
+                                {isVisible('sexo') && <td><span className={`sexo-badge ${(row.sexo || '').toLowerCase()}`}>{row.sexo || '-'}</span></td>}
                                 {isVisible('profissao') && <td className="text-muted">{row.profissao}</td>}
                                 {isVisible('faixaEtaria') && <td className="text-muted">{row.faixaEtaria}</td>}
                                 {isVisible('relacaoFamiliar') && <td className="text-muted">{row.relacaoFamiliar}</td>}
