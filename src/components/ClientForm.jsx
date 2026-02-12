@@ -149,6 +149,40 @@ const ClientForm = ({ onSave, initialData }) => {
         }
     };
 
+    const formatCPF = (value) => {
+        return value
+            .replace(/\D/g, '')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+            .replace(/(-\d{2})\d+?$/, '$1');
+    };
+
+    const formatCNPJ = (value) => {
+        return value
+            .replace(/\D/g, '')
+            .replace(/(\d{2})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1/$2')
+            .replace(/(\d{4})(\d)/, '$1-$2')
+            .replace(/(-\d{2})\d+?$/, '$1');
+    };
+
+    const handleCpfCnpjChange = (e) => {
+        let value = e.target.value;
+        if (tipoPessoa === 'Pessoa Física') {
+            value = formatCPF(value);
+        } else {
+            value = formatCNPJ(value);
+        }
+
+        setFormData(prev => ({ ...prev, cpfCnpj: value }));
+
+        if (errors.cpfCnpj) {
+            setErrors(prev => ({ ...prev, cpfCnpj: undefined }));
+        }
+    };
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -354,7 +388,8 @@ const ClientForm = ({ onSave, initialData }) => {
                                 placeholder={tipoPessoa === 'Pessoa Física' ? '000.000.000-00' : '00.000.000/0000-00'}
                                 name="cpfCnpj"
                                 value={formData.cpfCnpj}
-                                onChange={handleInputChange}
+                                onChange={handleCpfCnpjChange}
+                                maxLength={tipoPessoa === 'Pessoa Física' ? 14 : 18}
                             />
                         </div>
                         <div className="form-group col-span-2">

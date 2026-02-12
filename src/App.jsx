@@ -64,7 +64,9 @@ function App() {
   const handleEditClient = (client) => {
     // Find the raw data for this client from the mapped list
     // The mapped client object has 'rawData' property we added above
-    setEditingClient(client.rawData);
+    // We merge the mapped ID explicitly to ensure it's present for the update payload
+    // This fixes the issue where editing creates a new record if rawData lacks ID
+    setEditingClient({ ...client.rawData, id: client.id });
     setActiveTab('cadastrar');
   };
 
