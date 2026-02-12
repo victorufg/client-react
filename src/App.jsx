@@ -30,7 +30,7 @@ function App() {
           const parts = datePart.split('-');
           if (parts.length === 3) {
             const [year, month, day] = parts;
-            return `${day}/${month}`;
+            return `${day}/${month}/${year}`;
           }
           return '-';
         };
