@@ -75,7 +75,30 @@ const ClientForm = ({ onSave, initialData }) => {
                 emailComercial: initialData.email_comercial || '',
                 telefone: initialData.telefone || '',
                 telefoneComercial: initialData.telefone_comercial || '',
-                // Add missing fields mapping as necessary
+                // New bindings
+                sexo: initialData.sexo || '-',
+                relacaoFamiliar: initialData.relacao_familiar || '-',
+                profissao: initialData.profissao || '',
+                cnhVencimento: initialData.cnh_vencimento ? initialData.cnh_vencimento.split('T')[0] : '',
+                clienteDesde: initialData.cliente_desde ? initialData.cliente_desde.split('T')[0] : '',
+                statusAtivo: initialData.status_ativo ? 'Sim' : 'Não', // Assuming boolean or specific string
+                emitirNF: initialData.emitir_nf || '-',
+                issRetido: initialData.iss_retido || '-',
+                consumidorFinal: initialData.consumidor_final || '-',
+                produtorRural: initialData.produtor_rural || '-',
+                tipoContribuinte: initialData.tipo_contribuinte || '-',
+                tipoCliente: initialData.tipo_cliente || '-',
+                creditoLiberado: initialData.credito_liberado || '',
+                valorGasto: initialData.valor_gasto || '',
+                saldo: initialData.saldo || '',
+                valorConsumido: initialData.valor_consumido || '',
+                valorCustos: initialData.valor_custos || '',
+                lucratividade: initialData.lucratividade || '',
+                comissao: initialData.comissao || '',
+                dataPagamento: initialData.data_pagamento ? initialData.data_pagamento.split('T')[0] : '',
+                pix: initialData.pix || '',
+                restricao: initialData.restricao || '-',
+                observacao: initialData.observacao || ''
             });
 
             setAddress({
@@ -107,7 +130,30 @@ const ClientForm = ({ onSave, initialData }) => {
                 email: '',
                 emailComercial: '',
                 telefone: '',
-                telefoneComercial: ''
+                telefoneComercial: '',
+                sexo: '-',
+                relacaoFamiliar: '-',
+                profissao: '',
+                cnhVencimento: '',
+                clienteDesde: '',
+                statusAtivo: 'Sim',
+                emitirNF: '-',
+                issRetido: '-',
+                consumidorFinal: '-',
+                produtorRural: '-',
+                tipoContribuinte: '-',
+                tipoCliente: '-',
+                creditoLiberado: '',
+                valorGasto: '',
+                saldo: '',
+                valorConsumido: '',
+                valorCustos: '',
+                lucratividade: '',
+                comissao: '',
+                dataPagamento: '',
+                pix: '',
+                restricao: '-',
+                observacao: ''
             });
             setAddress({
                 cep: '',
@@ -450,7 +496,12 @@ const ClientForm = ({ onSave, initialData }) => {
                         </div>
                         <div className="form-group col-span-2">
                             <label>Sexo</label>
-                            <select className="modern-input">
+                            <select
+                                className="modern-input"
+                                name="sexo"
+                                value={formData.sexo || ''}
+                                onChange={handleInputChange}
+                            >
                                 <option>-</option>
                                 <option>Homem</option>
                                 <option>Mulher</option>
@@ -459,7 +510,12 @@ const ClientForm = ({ onSave, initialData }) => {
                         </div>
                         <div className="form-group col-span-2">
                             <label>Relação Familiar</label>
-                            <select className="modern-input">
+                            <select
+                                className="modern-input"
+                                name="relacaoFamiliar"
+                                value={formData.relacaoFamiliar || ''}
+                                onChange={handleInputChange}
+                            >
                                 <option>-</option>
                                 <option>Pai / Mãe</option>
                             </select>
@@ -468,15 +524,33 @@ const ClientForm = ({ onSave, initialData }) => {
                         {/* Row 3: Profissional */}
                         <div className="form-group col-span-2">
                             <label>Profissão</label>
-                            <input type="text" className="modern-input" />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="profissao"
+                                value={formData.profissao || ''}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>CNH Vencimento</label>
-                            <input type="date" className="modern-input" />
+                            <input
+                                type="date"
+                                className="modern-input"
+                                name="cnhVencimento"
+                                value={formData.cnhVencimento || ''}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Cliente desde</label>
-                            <input type="date" className="modern-input" />
+                            <input
+                                type="date"
+                                className="modern-input"
+                                name="clienteDesde"
+                                value={formData.clienteDesde || ''}
+                                onChange={handleInputChange}
+                            />
                         </div>
 
                         {/* Row 3: Metadata */}
@@ -513,7 +587,16 @@ const ClientForm = ({ onSave, initialData }) => {
                         )}
                         <div className="form-group col-span-2">
                             <label>Status Ativo?</label>
-                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
+                            <select
+                                className="modern-input"
+                                name="statusAtivo"
+                                value={formData.statusAtivo || ''}
+                                onChange={handleInputChange}
+                            >
+                                <option>-</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Data de cadastro</label>
@@ -536,23 +619,64 @@ const ClientForm = ({ onSave, initialData }) => {
                     <div className="form-grid">
                         <div className="form-group col-span-2">
                             <label>Emitir Notas Fiscais?</label>
-                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
+                            <select
+                                className="modern-input"
+                                name="emitirNF"
+                                value={formData.emitirNF || ''}
+                                onChange={handleInputChange}
+                            >
+                                <option>-</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>ISS retido na fonte?</label>
-                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
+                            <select
+                                className="modern-input"
+                                name="issRetido"
+                                value={formData.issRetido || ''}
+                                onChange={handleInputChange}
+                            >
+                                <option>-</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Consumidor final?</label>
-                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
+                            <select
+                                className="modern-input"
+                                name="consumidorFinal"
+                                value={formData.consumidorFinal || ''}
+                                onChange={handleInputChange}
+                            >
+                                <option>-</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Produtor Rural?</label>
-                            <select className="modern-input"><option>-</option><option>Sim</option><option>Não</option></select>
+                            <select
+                                className="modern-input"
+                                name="produtorRural"
+                                value={formData.produtorRural || ''}
+                                onChange={handleInputChange}
+                            >
+                                <option>-</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
                         </div>
                         <div className="form-group col-span-2">
                             <label>Tipo de Contribuinte</label>
-                            <select className="modern-input">
+                            <select
+                                className="modern-input"
+                                name="tipoContribuinte"
+                                value={formData.tipoContribuinte || ''}
+                                onChange={handleInputChange}
+                            >
                                 <option>-</option>
                                 <option>Não Contribuinte</option>
                                 <option>Contribuinte ICMS</option>
@@ -561,7 +685,12 @@ const ClientForm = ({ onSave, initialData }) => {
                         </div>
                         <div className="form-group col-span-2">
                             <label>Tipo de Cliente</label>
-                            <select className="modern-input">
+                            <select
+                                className="modern-input"
+                                name="tipoCliente"
+                                value={formData.tipoCliente || ''}
+                                onChange={handleInputChange}
+                            >
                                 <option>-</option>
                                 <option>Atacado</option>
                                 <option>Varejo</option>
@@ -571,43 +700,109 @@ const ClientForm = ({ onSave, initialData }) => {
 
                         <div className="form-group col-span-2">
                             <label>Crédito Liberado</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="creditoLiberado"
+                                placeholder="R$ 0,00"
+                                value={formData.creditoLiberado || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Valor gasto</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="valorGasto"
+                                placeholder="R$ 0,00"
+                                value={formData.valorGasto || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Saldo</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="saldo"
+                                placeholder="R$ 0,00"
+                                value={formData.saldo || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Valor Consumido</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="valorConsumido"
+                                placeholder="R$ 0,00"
+                                value={formData.valorConsumido || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Valor de Custos</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="valorCustos"
+                                placeholder="R$ 0,00"
+                                value={formData.valorCustos || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Lucratividade %</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="lucratividade"
+                                placeholder="R$ 0,00"
+                                value={formData.lucratividade || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Comissão % por indicação</label>
-                            <input type="text" className="modern-input" placeholder="R$ 0,00" onChange={handleMoneyInput} />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="comissao"
+                                placeholder="R$ 0,00"
+                                value={formData.comissao || ''}
+                                onChange={(e) => { handleMoneyInput(e); handleGeneralChange(e); }}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Data de pagamento</label>
-                            <input type="date" className="modern-input" />
+                            <input
+                                type="date"
+                                className="modern-input"
+                                name="dataPagamento"
+                                value={formData.dataPagamento || ''}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Pix</label>
-                            <input type="text" className="modern-input" />
+                            <input
+                                type="text"
+                                className="modern-input"
+                                name="pix"
+                                value={formData.pix || ''}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="form-group col-span-2">
                             <label>Restrição?</label>
-                            <select className="modern-input">
+                            <select
+                                className="modern-input"
+                                name="restricao"
+                                value={formData.restricao || ''}
+                                onChange={handleInputChange}
+                            >
                                 <option>-</option>
                                 <option>Não</option>
                                 <option>Sim</option>
@@ -794,7 +989,13 @@ const ClientForm = ({ onSave, initialData }) => {
 
                         <div className="form-group col-span-12">
                             <label>Observação</label>
-                            <textarea className="modern-textarea" rows="2"></textarea>
+                            <textarea
+                                className="modern-textarea"
+                                rows="2"
+                                name="observacao"
+                                value={formData.observacao || ''}
+                                onChange={handleInputChange}
+                            ></textarea>
                         </div>
                     </div>
                 </Section>
