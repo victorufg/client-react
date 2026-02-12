@@ -101,7 +101,7 @@ const ClientTable = ({ clients }) => {
                 <table className="modern-table">
                     <thead>
                         <tr>
-                            <th className="th-action"></th>
+                            <th className="th-action">Ações</th>
                             {isVisible('id') && <th className="th-id">ID</th>}
                             {isVisible('tipo') && <th>Tipo</th>}
                             {isVisible('cliente') && <th>
