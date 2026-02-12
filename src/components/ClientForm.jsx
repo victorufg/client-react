@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Save } from 'lucide-react';
 import '../styles/ClientForm.css';
 
@@ -14,7 +14,7 @@ const Section = ({ title, children, isOpen, onToggle }) => {
     );
 };
 
-const ClientForm = ({ onSave }) => {
+const ClientForm = ({ onSave, initialData }) => {
     const [sections, setSections] = useState({
         cadastrais: true,
         fiscais: true,
@@ -22,7 +22,6 @@ const ClientForm = ({ onSave }) => {
     });
 
     const [tipoPessoa, setTipoPessoa] = useState('Pessoa Física');
-
     const [dataNascimento, setDataNascimento] = useState('');
     const [faixaEtaria, setFaixaEtaria] = useState('');
 
@@ -31,9 +30,125 @@ const ClientForm = ({ onSave }) => {
         cpfCnpj: '',
         rgInscricao: '',
         apelido: '',
+        comoConheceu: '',
+        nomeAmigo: '',
+        email: '',
+        emailComercial: '',
+        telefone: '',
+        telefoneComercial: ''
+    });
+
+    const [address, setAddress] = useState({
+        cep: '',
+        logradouro: '',
+        numero: '',
+        complemento: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        codigoCidade: '',
+        referencia: '',
     });
 
     const [errors, setErrors] = useState({});
+
+    // Populate form if initialData is provided (Edit Mode)
+    useEffect(() => {
+        if (initialData) {
+            setTipoPessoa(initialData.tipo_pessoa || 'Pessoa Física');
+            setDataNascimento(initialData.data_nascimento ? initialData.data_nascimento.split('T')[0] : '');
+
+            // Calculate age/faixaEtaria if needed
+            if (initialData.data_nascimento) {
+                // Trigger logic or just set it
+                calculateAge(initialData.data_nascimento.split('T')[0]);
+            }
+
+            setFormData({
+                nome: initialData.nome || '',
+                cpfCnpj: initialData.cpf_cnpj || '',
+                rgInscricao: initialData.rg_inscricao || '',
+                apelido: initialData.apelido || '',
+                comoConheceu: initialData.como_conheceu || '',
+                nomeAmigo: initialData.nome_amigo || '',
+                email: initialData.email || '',
+                emailComercial: initialData.email_comercial || '',
+                telefone: initialData.telefone || '',
+                telefoneComercial: initialData.telefone_comercial || '',
+                // Add missing fields mapping as necessary
+            });
+
+            setAddress({
+                cep: initialData.cep || '',
+                logradouro: initialData.logradouro || '',
+                numero: initialData.numero || '',
+                complemento: initialData.complemento || '',
+                bairro: initialData.bairro || '',
+                cidade: initialData.cidade || '',
+                estado: initialData.estado || '',
+                codigoCidade: initialData.codigo_cidade || '',
+                referencia: initialData.referencia || '',
+            });
+
+            // Expand first section or all?
+            setSections({ cadastrais: true, fiscais: true, contato: true });
+        } else {
+            // Reset form if no initialData (New Mode)
+            setTipoPessoa('Pessoa Física');
+            setDataNascimento('');
+            setFaixaEtaria('');
+            setFormData({
+                nome: '',
+                cpfCnpj: '',
+                rgInscricao: '',
+                apelido: '',
+                comoConheceu: '',
+                nomeAmigo: '',
+                email: '',
+                emailComercial: '',
+                telefone: '',
+                telefoneComercial: ''
+            });
+            setAddress({
+                cep: '',
+                logradouro: '',
+                numero: '',
+                complemento: '',
+                bairro: '',
+                cidade: '',
+                estado: '',
+                codigoCidade: '',
+                referencia: '',
+            });
+        }
+    }, [initialData]);
+
+    const calculateAge = (date) => {
+        if (!date) {
+            setFaixaEtaria('');
+            return;
+        }
+        const today = new Date();
+        const birthDate = new Date(date);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        if (age < 0) {
+            setFaixaEtaria('Data Inválida');
+        } else if (age < 12) {
+            setFaixaEtaria(`Criança (${age} anos)`);
+        } else if (age < 18) {
+            setFaixaEtaria(`Adolescente (${age} anos)`);
+        } else if (age < 60) {
+            setFaixaEtaria(`Adulto (${age} anos)`);
+        } else {
+            setFaixaEtaria(`Idoso (${age} anos)`);
+        }
+    };
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -70,11 +185,13 @@ const ClientForm = ({ onSave }) => {
         setStatusMessage({ text: 'Salvando no banco de dados...', type: 'info' });
 
         const payload = {
+            id: initialData ? initialData.id : undefined, // Include ID if editing
             ...formData,
             ...address,
             tipoPessoa,
             dataNascimento,
             faixaEtaria
+            // Ensure all fields map back to what backend expects
         };
 
         try {
@@ -105,47 +222,10 @@ const ClientForm = ({ onSave }) => {
         }
     };
 
-    const [address, setAddress] = useState({
-        cep: '',
-        logradouro: '',
-        numero: '',
-        complemento: '',
-        bairro: '',
-        cidade: '',
-        estado: '',
-        codigoCidade: '',
-        referencia: '',
-    });
-
     const handleDataNascimentoChange = (e) => {
         const date = e.target.value;
         setDataNascimento(date);
-
-        if (!date) {
-            setFaixaEtaria('');
-            return;
-        }
-
-        const today = new Date();
-        const birthDate = new Date(date);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        if (age < 0) {
-            setFaixaEtaria('Data Inválida');
-        } else if (age < 12) {
-            setFaixaEtaria(`Criança (${age} anos)`);
-        } else if (age < 18) {
-            setFaixaEtaria(`Adolescente (${age} anos)`);
-        } else if (age < 60) {
-            setFaixaEtaria(`Adulto (${age} anos)`);
-        } else {
-            setFaixaEtaria(`Idoso (${age} anos)`);
-        }
+        calculateAge(date);
     };
 
     const formatCurrency = (value) => {
@@ -296,7 +376,7 @@ const ClientForm = ({ onSave }) => {
                                 type="text"
                                 className={`modern-input ${errors.nome ? 'input-error' : ''}`}
                                 name="nome"
-                                value={formData.nome}
+                                value={formData.nome || ''}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -306,7 +386,7 @@ const ClientForm = ({ onSave }) => {
                                 type="text"
                                 className="modern-input"
                                 name="apelido"
-                                value={formData.apelido}
+                                value={formData.apelido || ''}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -386,6 +466,7 @@ const ClientForm = ({ onSave }) => {
                                     className="modern-input"
                                     name="nomeAmigo"
                                     placeholder="Nome do amigo"
+                                    value={formData.nomeAmigo || ''}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -506,6 +587,7 @@ const ClientForm = ({ onSave }) => {
                                 className="modern-input"
                                 name="telefone"
                                 placeholder="(00) 00000-0000"
+                                value={formData.telefone || ''}
                                 onChange={(e) => {
                                     handlePhoneInput(e);
                                     handleGeneralChange(e);
@@ -519,6 +601,7 @@ const ClientForm = ({ onSave }) => {
                                 className="modern-input"
                                 name="telefoneComercial"
                                 placeholder="(00) 0000-0000"
+                                value={formData.telefoneComercial || ''}
                                 onChange={(e) => {
                                     handleLandlineInput(e);
                                     handleGeneralChange(e);

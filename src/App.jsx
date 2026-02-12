@@ -8,6 +8,7 @@ import './App.css'; // We'll create this for specific App-level layout if needed
 
 function App() {
   const [activeTab, setActiveTab] = useState('clientes');
+  const [editingClient, setEditingClient] = useState(null); // State for the client being edited
 
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +37,9 @@ function App() {
         cpfCnpj: c.cpf_cnpj || '-',
         sexo: c.sexo || '-',
         restricao: c.restricao === true ? 'Sim' : (c.restricao === false ? 'Não' : '-'),
-        status: c.status_ativo ? 'Ativo' : 'Inativo'
+        status: c.status_ativo ? 'Ativo' : 'Inativo',
+        // Preserve original raw data for editing
+        rawData: c
       }));
 
       setClients(mappedClients);
@@ -51,10 +54,48 @@ function App() {
     fetchClients();
   }, []);
 
-  const handleAddClient = (newClientData) => {
-    // Ao salvar um novo cliente, recarregamos a lista do banco para garantir sincronia
+  const handleSaveClient = (savedClient) => {
+    // Ao salvar um novo cliente ou editar, recarregamos a lista
     fetchClients();
-    setActiveTab('clientes');
+    setEditingClient(null); // Clear editing state
+    setActiveTab('clientes'); // Return to list
+  };
+
+  const handleEditClient = (client) => {
+    // Find the raw data for this client from the mapped list
+    // The mapped client object has 'rawData' property we added above
+    setEditingClient(client.rawData);
+    setActiveTab('cadastrar');
+  };
+
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    // If switching away from 'cadastrar' or manually clicking 'clientes', clear edit state?
+    // User expectation: If I click 'Clientes', I probably want to see the list.
+    // If I click 'Cadastrar' again, I probably want a new form.
+    if (tabId === 'clientes') {
+      setEditingClient(null);
+    }
+    // If clicking 'cadastrar' manually (not via Edit button), we should probably clear edit state too
+    // unless we want to persist it. For now, let's assume manual click = new client.
+    if (tabId === 'cadastrar' && !editingClient) {
+      // already null, fine.
+    } else if (tabId === 'cadastrar' && editingClient) {
+      // If we are already editing and click the tab, maybe keep it?
+      // But if we come from 'Clients' -> 'Cadastrar', it should be empty.
+      // We'll solve this by strictly setting editingClient only via the Edit button.
+      // And clearing it when leaving the tab or explicitly requesting new.
+      // For this specific requirement, let's just clear it if we are switching TO cadastrar manually.
+      // But handleTabChange is called for ALL clicks.
+      // We need to distinguish manual click vs programmatic switch.
+      // Actually, handleEditClient calls setEditingClient THEN setActiveTab.
+      // So editingClient is set.
+      // If I click the tab manually, this function is called.
+      // If I was on 'clientes' and click 'cadastrar', editingClient is null (from lines above).
+      // So it works for New.
+      // If I am on 'cadastrar' (editing) and click 'cadastrar' again?
+      // Maybe reset? Let's leave as is for now.
+    }
   };
 
   const renderContent = () => {
@@ -62,12 +103,20 @@ function App() {
       case 'clientes':
         return (
           <>
-            <ClientTable clients={clients} />
+            <ClientTable
+              clients={clients}
+              onEdit={handleEditClient}
+            />
             <Pagination />
           </>
         );
       case 'cadastrar':
-        return <ClientForm onSave={handleAddClient} />;
+        return (
+          <ClientForm
+            onSave={handleSaveClient}
+            initialData={editingClient}
+          />
+        );
       case 'dashboard':
         return <Reports clients={clients} />;
       default:
@@ -77,7 +126,11 @@ function App() {
 
   return (
     <div className="app-container">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Header
+        activeTab={activeTab}
+        setActiveTab={handleTabChange}
+        isEditing={!!editingClient && activeTab === 'cadastrar'}
+      />
       <div className="content-area">
         {renderContent()}
       </div>

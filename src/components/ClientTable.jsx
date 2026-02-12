@@ -23,7 +23,7 @@ const getAvatarColor = (name) => {
     return colors[Math.abs(hash) % colors.length];
 };
 
-const ClientTable = ({ clients }) => {
+const ClientTable = ({ clients, onEdit }) => {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [currentPage, setCurrentPage] = React.useState(1);
     const [itemsPerPage, setItemsPerPage] = React.useState(100);
@@ -289,7 +289,14 @@ const ClientTable = ({ clients }) => {
                             // Ensure no transform on inner element interferes with outer wrapper
                         }}
                     >
-                        <button className="menu-item" onClick={() => { console.log('Editar', openMenuId); setOpenMenuId(null); }}>
+                        <button className="menu-item" onClick={() => {
+                            if (onEdit) {
+                                // Find the actual client row object using openMenuId (which is the ID)
+                                const clientToEdit = clients.find(c => c.id === openMenuId);
+                                if (clientToEdit) onEdit(clientToEdit); // Pass the whole mapped client object
+                            }
+                            setOpenMenuId(null);
+                        }}>
                             <Edit size={14} /> Editar
                         </button>
                         <button className="menu-item delete" onClick={() => { console.log('Excluir', openMenuId); setOpenMenuId(null); }}>

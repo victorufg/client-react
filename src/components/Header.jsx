@@ -2,10 +2,10 @@ import React from 'react';
 import { Users, UserPlus, LayoutDashboard } from 'lucide-react';
 import '../styles/Header.css';
 
-const Header = ({ activeTab, setActiveTab }) => {
+const Header = ({ activeTab, setActiveTab, isEditing }) => {
   const tabs = [
     { id: 'clientes', label: 'Clientes', icon: Users },
-    { id: 'cadastrar', label: 'Cadastrar Cliente', icon: UserPlus },
+    { id: 'cadastrar', label: isEditing ? 'Edição Cliente' : 'Cadastrar Cliente', icon: UserPlus }, // Keep same icon or change if desired
     { id: 'dashboard', label: 'Relatório / Dashboard', icon: LayoutDashboard },
   ];
 
