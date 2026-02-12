@@ -139,6 +139,25 @@ function App() {
     }
   };
 
+  const handleStatusChange = async (client, isAtivo) => {
+    try {
+      const response = await fetch('/api/update-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: client.id, status: isAtivo })
+      });
+
+      if (response.ok) {
+        fetchClients();
+      } else {
+        alert('Erro ao atualizar status do cliente');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      alert('Erro ao atualizar status do cliente');
+    }
+  };
+
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     // If switching away from 'cadastrar' or manually clicking 'clientes', clear edit state?
