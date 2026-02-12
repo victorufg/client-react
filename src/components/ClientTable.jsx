@@ -115,7 +115,7 @@ const ClientTable = ({ clients }) => {
     }, [openMenuId]);
 
     const toggleMenu = (e, id) => {
-        e.stopPropagation();
+        e.stopPropagation(); // Stop click from bubbling to document (which closes menu)
         e.nativeEvent.stopImmediatePropagation();
 
         if (openMenuId === id) {
@@ -127,10 +127,12 @@ const ClientTable = ({ clients }) => {
             const openUp = spaceBelow < 150; // approximate menu height
 
             setMenuPosition({
-                top: openUp ? (rect.top + window.scrollY - 10) : (rect.bottom + window.scrollY + 5),
-                left: rect.right + window.scrollX,
-                transformOrigin: openUp ? 'bottom right' : 'top right',
-                transform: `translateX(-100%) ${openUp ? 'translateY(-100%)' : ''}`,
+                top: openUp ? (rect.top + window.scrollY - 5) : (rect.bottom + window.scrollY + 5),
+                // Align left side of menu with left side of button (Standard Dropdown)
+                left: rect.left + window.scrollX,
+                transformOrigin: openUp ? 'bottom left' : 'top left',
+                // Only transform Y for up direction, no X transform (so it stays left aligned)
+                transform: openUp ? 'translateY(-100%)' : 'none',
                 isUp: openUp
             });
             setOpenMenuId(id);
@@ -238,28 +240,37 @@ const ClientTable = ({ clients }) => {
 
             {openMenuId && typeof document !== 'undefined' && ReactDOM.createPortal(
                 <div
-                    ref={menuRef}
-                    className={`action-menu ${menuPosition.isUp ? 'open-up' : ''}`}
                     style={{
                         position: 'absolute',
                         top: Math.round(menuPosition.top),
                         left: Math.round(menuPosition.left),
-                        right: 'auto',
-                        transform: menuPosition.transform,
-                        transformOrigin: menuPosition.transformOrigin,
                         zIndex: 9999,
-                        marginTop: 0,
-                        marginBottom: 0,
-                        display: 'block'
+                        // We use the wrapper to handle the Up direction shift.
+                        // The inner element handles the animation within this frame.
+                        transform: menuPosition.transform,
+                        transformOrigin: menuPosition.transformOrigin
                     }}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <button className="menu-item" onClick={() => { console.log('Editar', openMenuId); setOpenMenuId(null); }}>
-                        <Edit size={14} /> Editar
-                    </button>
-                    <button className="menu-item delete" onClick={() => { console.log('Excluir', openMenuId); setOpenMenuId(null); }}>
-                        <Trash2 size={14} /> Excluir
-                    </button>
+                    <div
+                        className={`action-menu ${menuPosition.isUp ? 'open-up' : ''}`}
+                        style={{
+                            // Override absolute positioning from CSS class to let the wrapper control position
+                            position: 'static',
+                            marginTop: 0,
+                            marginBottom: 0,
+                            marginLeft: 0,
+                            marginRight: 0,
+                            // Ensure no transform on inner element interferes with outer wrapper
+                        }}
+                    >
+                        <button className="menu-item" onClick={() => { console.log('Editar', openMenuId); setOpenMenuId(null); }}>
+                            <Edit size={14} /> Editar
+                        </button>
+                        <button className="menu-item delete" onClick={() => { console.log('Excluir', openMenuId); setOpenMenuId(null); }}>
+                            <Trash2 size={14} /> Excluir
+                        </button>
+                    </div>
                 </div>,
                 document.body
             )}
