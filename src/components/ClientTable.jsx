@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { MoreHorizontal, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, ArrowUpDown, MessageSquare, MessageCircle, Power } from 'lucide-react';
 import '../styles/ClientTable.css';
 import Filters from './Filters';
 import Pagination from './Pagination';
@@ -305,7 +305,7 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                             alert('Gestão de Mensagens: Funcionalidade em desenvolvimento.');
                             setOpenMenuId(null);
                         }}>
-                            Gestão de Mensagens
+                            <MessageSquare size={14} /> Gestão de Mensagens
                         </button>
 
                         <button className="menu-item" onClick={() => {
@@ -323,7 +323,7 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                             }
                             setOpenMenuId(null);
                         }}>
-                            Enviar Whatsapp
+                            <MessageCircle size={14} /> Enviar Whatsapp
                         </button>
 
                         <button className="menu-item" onClick={() => {
@@ -345,7 +345,7 @@ const ClientTable = ({ clients, onEdit, onDelete, onStatusChange }) => {
                             }
                             setOpenMenuId(null);
                         }}>
-                            {clients.find(c => c.id === openMenuId)?.status === 'Ativo' ? 'Inativar Cliente' : 'Ativar Cliente'}
+                            <Power size={14} /> {clients.find(c => c.id === openMenuId)?.status === 'Ativo' ? 'Inativar Cliente' : 'Ativar Cliente'}
                         </button>
 
                         <button className="menu-item delete" onClick={() => {
