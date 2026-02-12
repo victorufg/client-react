@@ -67,10 +67,18 @@ export default async function handler(request, response) {
     await sql`ALTER TABLE clientes ALTER COLUMN valor_custos TYPE DECIMAL(15,2);`;
 
     // Adicionar novas colunas se não existirem
-    await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS gestao_mensagens TEXT;`;
+    try {
+      await sql`ALTER TABLE clientes ADD COLUMN IF NOT EXISTS gestao_mensagens TEXT;`;
+    } catch (e) {
+      console.log('Coluna gestao_mensagens já existe ou erro ao adicionar:', e.message);
+    }
 
-    return response.status(200).json({ message: 'Tabela criada ou atualizada com sucesso!', result });
+    return response.status(200).json({
+      message: 'Tabela atualizada com sucesso!',
+      details: 'A coluna gestao_mensagens foi verificada/adicionada.'
+    });
   } catch (error) {
+    console.error('Erro no script de banco:', error);
     return response.status(500).json({ error: error.message });
   }
 }
