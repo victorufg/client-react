@@ -229,8 +229,10 @@ const ClientForm = ({ onSave, initialData }) => {
         };
 
         try {
+            // Determine if update (PUT) or create (POST)
+            const method = initialData && initialData.id ? 'PUT' : 'POST';
             const response = await fetch('/api/save-client', {
-                method: 'POST',
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
