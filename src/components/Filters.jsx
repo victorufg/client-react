@@ -38,81 +38,107 @@ const Filters = ({
         <div className="card filters-card">
             <div className="filter-group" style={{ flex: 1 }}>
                 <div className="filter-row">
-                    <input
-                        type="text"
-                        className="modern-input"
-                        placeholder="Buscar em todas as colunas..."
-                        value={searchTerm}
-                        onChange={(e) => onSearchChange(e.target.value)}
-                    />
-                    <button
-                        className={`btn-outline ${showAdvanced ? 'active' : ''}`}
-                        onClick={() => setShowAdvanced(!showAdvanced)}
-                        title="Busca Avançada"
-                    >
-                        {showAdvanced ? <X size={18} /> : <Filter size={18} />}
-                    </button>
+                    <div className="filter-field" style={{ flex: 1 }}>
+                        <label className="field-label">Busca Global</label>
+                        <input
+                            type="text"
+                            className="modern-input"
+                            placeholder="Buscar em todas as colunas..."
+                            value={searchTerm}
+                            onChange={(e) => onSearchChange(e.target.value)}
+                        />
+                    </div>
+                    <div className="filter-field" style={{ flex: '0 0 auto', alignSelf: 'flex-end' }}>
+                        <button
+                            className={`btn-outline ${showAdvanced ? 'active' : ''}`}
+                            onClick={() => setShowAdvanced(!showAdvanced)}
+                            title="Busca Avançada"
+                            style={{ height: '45px', display: 'flex', alignItems: 'center' }}
+                        >
+                            {showAdvanced ? <X size={18} /> : <Filter size={18} />}
+                        </button>
+                    </div>
                 </div>
 
                 {showAdvanced && (
                     <div className="advanced-filters">
                         <div className="filter-row">
-                            <select
-                                className="modern-select"
-                                value={advancedFilters.status}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, status: e.target.value })}
-                            >
-                                <option value="">-</option>
-                                <option value="Ativo">Ativos</option>
-                                <option value="Inativo">Inativos</option>
-                            </select>
-                            <input
-                                type="text"
-                                className="modern-input"
-                                placeholder="Cidade"
-                                value={advancedFilters.cidade}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, cidade: e.target.value })}
-                            />
-                            <input
-                                type="text"
-                                className="modern-input"
-                                placeholder="Estado (UF)"
-                                value={advancedFilters.estado}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, estado: e.target.value })}
-                                maxLength={2}
-                            />
-                            <select
-                                className="modern-select"
-                                value={advancedFilters.tipo}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, tipo: e.target.value })}
-                            >
-                                <option value="">-</option>
-                                <option value="Físico">Físico</option>
-                                <option value="Jurídico">Jurídico</option>
-                            </select>
-                            <select
-                                className="modern-select"
-                                value={advancedFilters.sexo}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, sexo: e.target.value })}
-                            >
-                                <option value="">-</option>
-                                <option value="M">Masculino</option>
-                                <option value="F">Feminino</option>
-                            </select>
-                            <input
-                                type="text"
-                                className="modern-input"
-                                placeholder="Profissão"
-                                value={advancedFilters.profissao}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, profissao: e.target.value })}
-                            />
-                            <input
-                                type="date"
-                                className="modern-input"
-                                title="Data de Cadastro"
-                                value={advancedFilters.dataCadastro}
-                                onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, dataCadastro: e.target.value })}
-                            />
+                            <div className="filter-field">
+                                <label className="field-label">Status</label>
+                                <select
+                                    className="modern-select"
+                                    value={advancedFilters.status}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, status: e.target.value })}
+                                >
+                                    <option value="">-</option>
+                                    <option value="Ativo">Ativos</option>
+                                    <option value="Inativo">Inativos</option>
+                                </select>
+                            </div>
+                            <div className="filter-field">
+                                <label className="field-label">Cidade</label>
+                                <input
+                                    type="text"
+                                    className="modern-input"
+                                    placeholder="Cidade"
+                                    value={advancedFilters.cidade}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, cidade: e.target.value })}
+                                />
+                            </div>
+                            <div className="filter-field">
+                                <label className="field-label">Estado (UF)</label>
+                                <input
+                                    type="text"
+                                    className="modern-input"
+                                    placeholder="EX: GO"
+                                    value={advancedFilters.estado}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, estado: e.target.value })}
+                                    maxLength={2}
+                                />
+                            </div>
+                            <div className="filter-field">
+                                <label className="field-label">Tipo Pessoa</label>
+                                <select
+                                    className="modern-select"
+                                    value={advancedFilters.tipo}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, tipo: e.target.value })}
+                                >
+                                    <option value="">-</option>
+                                    <option value="Físico">Físico</option>
+                                    <option value="Jurídico">Jurídico</option>
+                                </select>
+                            </div>
+                            <div className="filter-field">
+                                <label className="field-label">Sexo</label>
+                                <select
+                                    className="modern-select"
+                                    value={advancedFilters.sexo}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, sexo: e.target.value })}
+                                >
+                                    <option value="">-</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                </select>
+                            </div>
+                            <div className="filter-field">
+                                <label className="field-label">Profissão</label>
+                                <input
+                                    type="text"
+                                    className="modern-input"
+                                    placeholder="Profissão"
+                                    value={advancedFilters.profissao}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, profissao: e.target.value })}
+                                />
+                            </div>
+                            <div className="filter-field">
+                                <label className="field-label">Data de Cadastro</label>
+                                <input
+                                    type="date"
+                                    className="modern-input"
+                                    value={advancedFilters.dataCadastro}
+                                    onChange={(e) => onAdvancedFilterChange({ ...advancedFilters, dataCadastro: e.target.value })}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}

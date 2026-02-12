@@ -183,11 +183,27 @@
 
 .advanced-filters .filter-row {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem 1rem;
     border: none;
     padding: 0;
 }
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.field-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.2rem;
+}
+
 
 .advanced-filters .modern-select,
 .advanced-filters .modern-input {
